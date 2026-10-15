@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="784" viewBox="0 0 1080 784" role="img" aria-labelledby="title desc">
+  <title id="title">Header matching</title>
+  <desc id="desc">Header matching. Lexical similarity (code, no model call) averages numbering affinity with the best of character, token and substring overlap. Embedding similarity (model) embeds each distinct header once and takes the cosine, clipped to 0 to 1. The combined score is half of each; the best candidate per clause is paired if it scores at least 0.5, otherwise the mitigation stays empty, with no source-document filter. Worked example for clause 4. Equipment return, Document A, with lexical scores computed by the matcher and illustrative embedding scores: 4. Return of borrowed items 0.65 and 0.74, combined 0.70, paired; 4. Restoring the activity area (Document B) 0.62 and 0.41, 0.51; 7. Access to shared equipment 0.21 and 0.52, 0.37; 12. Keeping loan records 0.19 and 0.46, 0.33; 12. Aggregate participation reporting 0.18 and 0.15, 0.17; 7. Changes to activity times 0.10 and 0.18, 0.14.</desc>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#cbd1d4"/></pattern>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#151719"/></marker>
+    <style>
+  .sans { font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", ui-sans-serif, system-ui, Arial, sans-serif; }
+  .mono { font-family: "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace; }
+  .ink { fill: #151719; }
+  .muted { fill: #5d646a; }
+  .white { fill: #ffffff; }
+  .lav { fill: #dce3ff; }
+  .invmuted { fill: #d8dde0; }
+  .lime { fill: #b9f227; }
+  .coral { fill: #c93a28; }
+  .teal { fill: #1d7a6e; }
+  .flow { fill: none; stroke: #151719; stroke-width: 2.5; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow); }
+</style>
+  </defs>
+  <rect width="1080" height="784" fill="#f7f8f5"/>
+  <rect width="1080" height="784" fill="url(#grid)" opacity="0.24"/>
+<g id="header"><text x="38" y="54" class="sans ink" font-size="12" font-weight="700" letter-spacing="1.5">LEGALDOC EXTRACTION / HEADER MATCHING</text><rect x="700" y="43" width="13" height="13" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/><text x="720" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">LEXICAL</text><rect x="800.8" y="43" width="13" height="13" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/><text x="820.8" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">EMBEDDING</text></g>
+<text x="38" y="110" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">SCORING</text><text x="129.2" y="110" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">EVERY CLAUSE HEADER × EVERY MITIGATION HEADER</text><line x1="538.2" y1="106" x2="1042" y2="106" stroke="#c5cbce"/>
+<rect x="38" y="128" width="316" height="176" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="38" y="128" width="316" height="62" fill="#35b8a6" stroke="#151719" stroke-width="2"/><text x="56" y="148" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CODE</text><text x="56" y="175" class="sans ink" font-size="20" font-weight="800" letter-spacing="-0.35">Lexical</text><text x="56" y="212" class="sans muted" font-size="12.5" font-weight="700">No model call</text><rect x="56" y="226" width="280" height="28" fill="#eef1f2"/><text x="68" y="245" class="sans ink" font-size="13.5" font-weight="800">Numbering affinity</text><rect x="56" y="262" width="280" height="28" fill="#eef1f2"/><text x="68" y="281" class="sans ink" font-size="13.5" font-weight="800">Character · token · substring</text>
+<rect x="382" y="128" width="316" height="176" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="382" y="128" width="316" height="62" fill="#ff6b57" stroke="#151719" stroke-width="2"/><text x="400" y="148" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">MODEL</text><text x="400" y="175" class="sans ink" font-size="20" font-weight="800" letter-spacing="-0.35">Embedding</text><text x="400" y="212" class="sans muted" font-size="12.5" font-weight="700">Each distinct header embedded once</text><rect x="400" y="226" width="280" height="28" fill="#eef1f2"/><text x="412" y="245" class="sans ink" font-size="13.5" font-weight="800">Cosine similarity</text><rect x="400" y="262" width="280" height="28" fill="#eef1f2"/><text x="412" y="281" class="sans ink" font-size="13.5" font-weight="800">Clipped to 0–1</text>
+<rect x="726" y="128" width="316" height="176" fill="#151719"/><circle cx="745" cy="148" r="5" fill="#b9f227"/><text x="757" y="152" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">WORKED EXAMPLE</text><text x="744" y="190" class="sans white" font-size="21" font-weight="800" letter-spacing="-0.35">4. Equipment return</text><text x="744" y="214" class="sans invmuted" font-size="12.5" font-weight="700">Document A · equipment-loan.pdf</text><text x="744" y="256" class="mono invmuted" font-size="10.5" font-weight="700" letter-spacing="0.3">LEXICAL: COMPUTED BY THE MATCHER</text><text x="744" y="276" class="mono invmuted" font-size="10.5" font-weight="700" letter-spacing="0.3">EMBEDDING: ILLUSTRATIVE VALUES</text>
+<path class="flow" d="M196,304 V346"/>
+<path class="flow" d="M540,304 V346"/>
+<rect x="180.4" y="315" width="31.2" height="18" fill="#151719"/><text x="196" y="327.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">50%</text>
+<rect x="524.4" y="315" width="31.2" height="18" fill="#151719"/><text x="540" y="327.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">50%</text>
+<rect x="38" y="347" width="1004" height="76" fill="#3655d4" stroke="#151719" stroke-width="2"/>
+<text x="64" y="393" class="sans white" font-size="24" font-weight="800" letter-spacing="-0.5">Combined score</text>
+<text x="286" y="380" class="sans lav" font-size="13" font-weight="700">Best candidate per clause is paired if it scores ≥ 0.5;</text>
+<text x="286" y="400" class="sans lav" font-size="13" font-weight="700">otherwise the mitigation cell stays empty. No source-document filter.</text>
+<g id="board">
+<text x="38" y="456" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">CANDIDATES</text><text x="158" y="456" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">FOR 4. EQUIPMENT RETURN</text><line x1="377.8" y1="452" x2="1042" y2="452" stroke="#c5cbce"/>
+<text x="38" y="480" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">MITIGATION HEADER</text>
+<text x="360" y="480" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">DOC</text>
+<text x="410" y="480" class="sans teal" font-size="10.5" font-weight="800" letter-spacing="1.25">LEX</text>
+<text x="476" y="480" class="sans coral" font-size="10.5" font-weight="800" letter-spacing="1.25">EMB</text>
+<text x="560" y="480" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">COMBINED</text>
+<text x="884" y="480" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">SCORE</text>
+<rect x="38" y="490" width="1004" height="32" fill="#b9f227"/>
+<text x="50" y="511" class="sans ink" font-size="14" font-weight="800">4. Return of borrowed items</text>
+<text x="364" y="511" class="mono ink" font-size="13" font-weight="700">A</text>
+<text x="410" y="511" class="mono teal" font-size="13" font-weight="800">0.65</text>
+<text x="476" y="511" class="mono coral" font-size="13" font-weight="800">0.74</text>
+<rect x="560" y="497" width="97.5" height="18" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/>
+<rect x="657.5" y="497" width="111.0" height="18" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/>
+<text x="884" y="511" class="mono ink" font-size="14" font-weight="800">0.70</text>
+<rect x="954.8" y="497.0" width="50.4" height="18" fill="#151719"/><text x="980" y="509.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">PAIRED</text>
+<rect x="38" y="528" width="1004" height="32" fill="#eef1f2"/>
+<text x="50" y="549" class="sans ink" font-size="14" font-weight="800">4. Restoring the activity area</text>
+<text x="364" y="549" class="mono ink" font-size="13" font-weight="700">B</text>
+<text x="410" y="549" class="mono teal" font-size="13" font-weight="800">0.62</text>
+<text x="476" y="549" class="mono coral" font-size="13" font-weight="800">0.41</text>
+<rect x="560" y="535" width="92.4" height="18" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/>
+<rect x="652.4" y="535" width="61.5" height="18" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/>
+<text x="884" y="549" class="mono ink" font-size="14" font-weight="800">0.51</text>
+<rect x="38" y="566" width="1004" height="32" fill="#eef1f2"/>
+<text x="50" y="587" class="sans ink" font-size="14" font-weight="800">7. Access to shared equipment</text>
+<text x="364" y="587" class="mono ink" font-size="13" font-weight="700">A</text>
+<text x="410" y="587" class="mono teal" font-size="13" font-weight="800">0.21</text>
+<text x="476" y="587" class="mono coral" font-size="13" font-weight="800">0.52</text>
+<rect x="560" y="573" width="32.1" height="18" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/>
+<rect x="592.1" y="573" width="78.0" height="18" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/>
+<text x="884" y="587" class="mono ink" font-size="14" font-weight="800">0.37</text>
+<rect x="38" y="604" width="1004" height="32" fill="#eef1f2"/>
+<text x="50" y="625" class="sans ink" font-size="14" font-weight="800">12. Keeping loan records</text>
+<text x="364" y="625" class="mono ink" font-size="13" font-weight="700">A</text>
+<text x="410" y="625" class="mono teal" font-size="13" font-weight="800">0.19</text>
+<text x="476" y="625" class="mono coral" font-size="13" font-weight="800">0.46</text>
+<rect x="560" y="611" width="29.1" height="18" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/>
+<rect x="589.1" y="611" width="69.0" height="18" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/>
+<text x="884" y="625" class="mono ink" font-size="14" font-weight="800">0.33</text>
+<rect x="38" y="642" width="1004" height="32" fill="#eef1f2"/>
+<text x="50" y="663" class="sans ink" font-size="14" font-weight="800">12. Aggregate participation reporting</text>
+<text x="364" y="663" class="mono ink" font-size="13" font-weight="700">B</text>
+<text x="410" y="663" class="mono teal" font-size="13" font-weight="800">0.18</text>
+<text x="476" y="663" class="mono coral" font-size="13" font-weight="800">0.15</text>
+<rect x="560" y="649" width="27.6" height="18" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/>
+<rect x="587.6" y="649" width="22.5" height="18" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/>
+<text x="884" y="663" class="mono ink" font-size="14" font-weight="800">0.17</text>
+<rect x="38" y="680" width="1004" height="32" fill="#eef1f2"/>
+<text x="50" y="701" class="sans ink" font-size="14" font-weight="800">7. Changes to activity times</text>
+<text x="364" y="701" class="mono ink" font-size="13" font-weight="700">B</text>
+<text x="410" y="701" class="mono teal" font-size="13" font-weight="800">0.10</text>
+<text x="476" y="701" class="mono coral" font-size="13" font-weight="800">0.18</text>
+<rect x="560" y="687" width="14.7" height="18" fill="#35b8a6" stroke="#151719" stroke-width="1.5"/>
+<rect x="574.7" y="687" width="27.0" height="18" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/>
+<text x="884" y="701" class="mono ink" font-size="14" font-weight="800">0.14</text>
+<line x1="710.0" y1="484" x2="710.0" y2="718" stroke="#151719" stroke-width="2" stroke-dasharray="5 4"/>
+<rect x="694.4" y="723" width="31.2" height="18" fill="#151719"/><text x="710" y="735.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">0.5</text>
+</g>
+<text x="38" y="766" class="sans muted" font-size="12.5" font-weight="700">Document B's 4. Restoring the activity area nearly ties on numbering (0.62 vs 0.65 lexical); the embedding separates them.</text>
+</svg>

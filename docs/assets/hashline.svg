@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="828" viewBox="0 0 1080 828" role="img" aria-labelledby="title desc">
+  <title id="title">Hashline</title>
+  <desc id="desc">Hashline is a line-addressed read and edit tool. A reference such as 17#3ade50 is a line number plus the first six hex characters of the line&#x27;s SHA-256. Edit, used by the repair agent loops through edit_document: raw OCR split clause 4.1 across lines 19 and 20; a replace_range from 19#b538cc to 20#06cdd9 joins them into the prepared line 19#c2539c, and line 22 moves up to 21 keeping its hash; insert_before, insert_after and append also exist, with up to 20 edits per batch. Copy, used by the clause extractor: read_hashline_range with 17#3ade50 and 31#31dd66 returns lines 17 to 31 word for word; the model supplied only the two references. Every reference is checked against the current text: if its line still has that hash it is used; otherwise exactly one match within three lines is used; otherwise it is rejected and the current lines are shown.</desc>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#cbd1d4"/></pattern>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#151719"/></marker>
+    <style>
+  .sans { font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", ui-sans-serif, system-ui, Arial, sans-serif; }
+  .mono { font-family: "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace; }
+  .ink { fill: #151719; }
+  .muted { fill: #5d646a; }
+  .white { fill: #ffffff; }
+  .lav { fill: #dce3ff; }
+  .invmuted { fill: #d8dde0; }
+  .lime { fill: #b9f227; }
+  .coral { fill: #c93a28; }
+  .teal { fill: #1d7a6e; }
+  .flow { fill: none; stroke: #151719; stroke-width: 2.5; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow); }
+</style>
+  </defs>
+  <rect width="1080" height="828" fill="#f7f8f5"/>
+  <rect width="1080" height="828" fill="url(#grid)" opacity="0.24"/>
+<g id="header"><text x="38" y="54" class="sans ink" font-size="12" font-weight="700" letter-spacing="1.5">LEGALDOC EXTRACTION / HASHLINE</text></g>
+<g id="hashline-band">
+<rect x="38" y="84" width="1004" height="104" fill="#3655d4" stroke="#151719" stroke-width="2"/>
+<text x="64" y="134" class="sans white" font-size="31" font-weight="800" letter-spacing="-0.6">Hashline</text>
+<text x="64" y="158" class="sans lav" font-size="12.5" font-weight="700">Each line: its number + the first 6 hex of its SHA-256</text>
+<text x="470" y="134" class="mono" font-size="24" font-weight="800" fill="#ffffff">17</text>
+<line x1="470" y1="144" x2="498.8" y2="144" stroke="#ffffff" stroke-width="2"/>
+<text x="470" y="164" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">LINE</text>
+<text x="514.8" y="134" class="mono" font-size="24" font-weight="800" fill="#dce3ff">#</text>
+<text x="545.2" y="134" class="mono" font-size="24" font-weight="800" fill="#b9f227">3ade50</text>
+<line x1="545.2" y1="144" x2="631.6" y2="144" stroke="#b9f227" stroke-width="2"/>
+<text x="545.2" y="164" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">HASH</text>
+<text x="647.6" y="134" class="mono" font-size="24" font-weight="800" fill="#dce3ff">:</text>
+<text x="678" y="134" class="mono" font-size="24" font-weight="800" fill="#ffffff">4. Equipment return</text>
+<line x1="678" y1="144" x2="951.6" y2="144" stroke="#ffffff" stroke-width="2"/>
+<text x="678" y="164" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">TEXT</text>
+</g>
+<g id="edit">
+<rect x="38" y="214" width="494" height="428" fill="#ffffff" stroke="#151719" stroke-width="2"/>
+<rect x="38" y="214" width="494" height="34" fill="#151719" stroke="#151719" stroke-width="2"/>
+<circle cx="55" cy="231" r="5" fill="#b9f227"/>
+<text x="67" y="235" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">EDIT · REPAIR AGENT LOOPS</text>
+<text x="518" y="235" class="mono invmuted" font-size="11.5" font-weight="700" text-anchor="end">edit_document</text>
+<text x="56" y="270" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">BEFORE · RAW OCR, BLANK LINES HIDDEN</text>
+<rect x="56" y="280" width="458" height="125" fill="#ffffff" stroke="#151719" stroke-width="1.5"/><rect x="56" y="280" width="104" height="125" fill="#eef1f2" stroke="#151719" stroke-width="1.5"/><text x="150" y="297" class="mono muted" font-size="12" font-weight="700" text-anchor="end">15#4f6878</text><text x="176" y="297" class="sans ink" font-size="13" font-weight="700">Document A - Equipment agreement</text><text x="150" y="322" class="mono muted" font-size="12" font-weight="700" text-anchor="end">17#3ade50</text><text x="176" y="322" class="sans ink" font-size="13" font-weight="700">4. Equipment return</text><rect x="161" y="331" width="352" height="23" fill="#ffd9d3"/><rect x="161" y="331" width="4" height="23" fill="#ff6b57"/><text x="150" y="347" class="mono muted" font-size="12" font-weight="700" text-anchor="end">19#b538cc</text><text x="176" y="347" class="sans ink" font-size="13" font-weight="700">4.1 The borrower must return all…</text><rect x="161" y="356" width="352" height="23" fill="#ffd9d3"/><rect x="161" y="356" width="4" height="23" fill="#ff6b57"/><text x="150" y="372" class="mono muted" font-size="12" font-weight="700" text-anchor="end">20#06cdd9</text><text x="176" y="372" class="sans ink" font-size="13" font-weight="700">kits, accessories, and kit cases within…</text><text x="150" y="397" class="mono muted" font-size="12" font-weight="700" text-anchor="end">22#0b1f90</text><text x="176" y="397" class="sans ink" font-size="13" font-weight="700">4.2 Before accepting an item, the…</text>
+<rect x="56" y="419" width="458" height="73" fill="#151719"/><text x="70" y="445" class="mono" font-size="12" font-weight="700" xml:space="preserve"><tspan class="invmuted">"operation": </tspan><tspan class="white">"replace_range",</tspan></text><text x="70" y="464" class="mono" font-size="12" font-weight="700" xml:space="preserve"><tspan class="invmuted">"start_ref": </tspan><tspan class="lime">"19#b538cc"</tspan><tspan class="invmuted">, "end_ref": </tspan><tspan class="lime">"20#06cdd9"</tspan><tspan class="invmuted">,</tspan></text><text x="70" y="483" class="mono" font-size="12" font-weight="700" xml:space="preserve"><tspan class="invmuted">"lines": </tspan><tspan class="white">["4.1 The borrower must return … return."]</tspan></text>
+<text x="56" y="512" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">AFTER · LINE 22 MOVES UP, SAME HASH</text>
+<rect x="56" y="522" width="458" height="75" fill="#ffffff" stroke="#151719" stroke-width="1.5"/><rect x="56" y="522" width="104" height="75" fill="#eef1f2" stroke="#151719" stroke-width="1.5"/><text x="150" y="539" class="mono muted" font-size="12" font-weight="700" text-anchor="end">17#3ade50</text><text x="176" y="539" class="sans ink" font-size="13" font-weight="700">4. Equipment return</text><rect x="161" y="548" width="352" height="23" fill="#eaf8bf"/><rect x="161" y="548" width="4" height="23" fill="#b9f227"/><text x="150" y="564" class="mono muted" font-size="12" font-weight="700" text-anchor="end">19#c2539c</text><text x="176" y="564" class="sans ink" font-size="13" font-weight="700">4.1 The borrower must return all…</text><text x="150" y="589" class="mono muted" font-size="12" font-weight="700" text-anchor="end">21#0b1f90</text><text x="176" y="589" class="sans ink" font-size="13" font-weight="700">4.2 Before accepting an item, the…</text>
+<text x="56" y="623" class="sans muted" font-size="12" font-weight="700">Also insert_before, insert_after, append; up to 20 per batch.</text>
+</g>
+<g id="copy">
+<rect x="548" y="214" width="494" height="428" fill="#ffffff" stroke="#151719" stroke-width="2"/>
+<rect x="548" y="214" width="494" height="34" fill="#eef1f2" stroke="#151719" stroke-width="2"/>
+<text x="562" y="235" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">COPY · CLAUSE EXTRACTOR</text>
+<text x="1028" y="235" class="mono muted" font-size="11.5" font-weight="700" text-anchor="end">read_hashline_range</text>
+<text x="566" y="270" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">PREPARED MARKDOWN · BLANK LINES HIDDEN</text>
+<rect x="566" y="280" width="458" height="125" fill="#ffffff" stroke="#151719" stroke-width="1.5"/><rect x="566" y="280" width="104" height="125" fill="#eef1f2" stroke="#151719" stroke-width="1.5"/><rect x="671" y="281" width="352" height="23" fill="#dce3ff"/><rect x="671" y="281" width="4" height="23" fill="#3655d4"/><text x="660" y="297" class="mono muted" font-size="12" font-weight="700" text-anchor="end">17#3ade50</text><text x="686" y="297" class="sans ink" font-size="13" font-weight="700">4. Equipment return</text><rect x="671" y="306" width="352" height="23" fill="#dce3ff"/><rect x="671" y="306" width="4" height="23" fill="#3655d4"/><text x="660" y="322" class="mono muted" font-size="12" font-weight="700" text-anchor="end">19#c2539c</text><text x="686" y="322" class="sans ink" font-size="13" font-weight="700">4.1 The borrower must return all…</text><rect x="671" y="331" width="352" height="23" fill="#dce3ff"/><rect x="671" y="331" width="4" height="23" fill="#3655d4"/><text x="686" y="347" class="sans muted" font-size="12.5" font-weight="700">⋮  lines 21–29</text><rect x="671" y="356" width="352" height="23" fill="#dce3ff"/><rect x="671" y="356" width="4" height="23" fill="#3655d4"/><text x="660" y="372" class="mono muted" font-size="12" font-weight="700" text-anchor="end">31#31dd66</text><text x="686" y="372" class="sans ink" font-size="13" font-weight="700">4.4 The steward must close the checkout…</text><text x="660" y="397" class="mono muted" font-size="12" font-weight="700" text-anchor="end">33#f3ffbb</text><text x="686" y="397" class="sans ink" font-size="13" font-weight="700">7. Shared access</text>
+<rect x="566" y="419" width="458" height="54" fill="#151719"/><text x="580" y="445" class="mono" font-size="12" font-weight="700" xml:space="preserve"><tspan class="white">read_hashline_range(</tspan></text><text x="580" y="464" class="mono" font-size="12" font-weight="700" xml:space="preserve"><tspan class="invmuted">    markdown, </tspan><tspan class="lime">"17#3ade50"</tspan><tspan class="invmuted">, </tspan><tspan class="lime">"31#31dd66"</tspan><tspan class="white">)</tspan></text>
+<text x="566" y="512" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">RETURNS</text>
+<rect x="566" y="522" width="458" height="50" fill="#dce3ff" stroke="#151719" stroke-width="1.5"/>
+<rect x="566" y="522" width="5" height="50" fill="#3655d4"/>
+<text x="584" y="543" class="sans ink" font-size="14" font-weight="800">Lines 17–31, word for word</text>
+<text x="584" y="561" class="sans muted" font-size="12" font-weight="700">The model supplied only the two references.</text>
+</g>
+<g id="validation">
+<text x="38" y="680" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">EVERY REFERENCE IS CHECKED</text><text x="311.6" y="680" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">AGAINST THE CURRENT TEXT</text><line x1="540" y1="676" x2="1042" y2="676" stroke="#c5cbce"/>
+<rect x="38" y="698" width="184" height="78" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="38" y="698" width="184" height="26" fill="#eef1f2" stroke="#151719" stroke-width="2"/><text x="52" y="715.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">REFERENCE</text><text x="52" y="748" class="sans ink" font-size="17" font-weight="800" letter-spacing="-0.2">23#f8557f</text><text x="52" y="769" class="sans muted" font-size="12.5" font-weight="700">A caller's reference</text>
+<path class="flow" d="M222,737 H275"/>
+<rect x="276" y="698" width="250" height="78" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="276" y="698" width="250" height="26" fill="#b9f227" stroke="#151719" stroke-width="2"/><text x="290" y="715.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CHECK</text><text x="290" y="748" class="sans ink" font-size="15.5" font-weight="800" letter-spacing="-0.2">Same line, same hash?</text><text x="290" y="769" class="sans muted" font-size="12.5" font-weight="700">Line 23 still f8557f</text>
+<path class="flow" d="M526,737 H585"/>
+<rect x="543.6" y="714" width="24.8" height="18" fill="#151719"/><text x="556" y="726.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">NO</text>
+<rect x="586" y="698" width="250" height="78" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="586" y="698" width="250" height="26" fill="#b9f227" stroke="#151719" stroke-width="2"/><text x="600" y="715.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CHECK</text><text x="600" y="748" class="sans ink" font-size="15.5" font-weight="800" letter-spacing="-0.2">One match within ±3?</text><text x="600" y="769" class="sans muted" font-size="12.5" font-weight="700">The line may have moved</text>
+<path class="flow" d="M836,737 H879"/>
+<rect x="845.6" y="714" width="24.8" height="18" fill="#151719"/><text x="858" y="726.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">NO</text>
+<rect x="880" y="698" width="162" height="78" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="880" y="698" width="162" height="26" fill="#ff6b57" stroke="#151719" stroke-width="2"/><text x="894" y="715.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">STALE</text><text x="894" y="748" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Reject</text><text x="894" y="769" class="sans muted" font-size="12.5" font-weight="700">Shows current lines</text>
+<rect x="340.6" y="793" width="120.8" height="18" fill="#151719"/><text x="401" y="805.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">YES · USE LINE 23</text>
+<path class="flow" d="M401,776 V793"/>
+<rect x="628.2" y="793" width="165.6" height="18" fill="#151719"/><text x="711" y="805.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">YES · USE THE MOVED LINE</text>
+<path class="flow" d="M711,776 V793"/>
+</g>
+</svg>

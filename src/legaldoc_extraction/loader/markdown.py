@@ -1,0 +1,44 @@
+"""Normalize OCR punctuation and layout noise before joining chunks and recording their boundary lines."""
+
+import re
+
+_PRIVATE_USE_RE = re.compile(r"[\uf000-\uf8ff]")
+_BULLET_RE = re.compile(
+    r"[\u2022\u25cf\u25cb\u25aa\u25ab\u25e6\u25a0\u25a1\u2043\u2219]"
+)
+_MULTI_DASH_RE = re.compile(r"-  +")
+_DASHES_RE = re.compile(r"-{2,}\s*")
+_MULTI_SPACE_RE = re.compile(r" {2,}")
+_PAGE_BREAK_RE = re.compile(r"(?m)^(?:-\s*){3,}-?\s*$")
+_MULTI_NEWLINE_RE = re.compile(r"\n{3,}")
+_CHAR_REPLACEMENTS = {
+    "&amp;": "&",
+    "\u2019": "'",
+    "\u2018": "'",
+    "\u201c": '"',
+    "\u201d": '"',
+    "\u2013": "-",
+    "\u2014": "-",
+    "\u2026": "...",
+    "\u00a0": " ",
+    "\u200b": "",
+    "\u00ad": "",
+}
+
+
+def clean_markdown(content: str) -> str:
+    """Normalize markdown bullets, spacing, and noisy page-break artifacts."""
+    if not content:
+        return ""
+
+    cleaned_content = _PRIVATE_USE_RE.sub("- ", content)
+    cleaned_content = _BULLET_RE.sub("- ", cleaned_content)
+    for old, new in _CHAR_REPLACEMENTS.items():
+        cleaned_content = cleaned_content.replace(old, new)
+
+    cleaned_content = _MULTI_DASH_RE.sub("- ", cleaned_content)
+    cleaned_content = _DASHES_RE.sub("- ", cleaned_content)
+    cleaned_content = _MULTI_SPACE_RE.sub(" ", cleaned_content)
+    cleaned_content = _PAGE_BREAK_RE.sub("", cleaned_content)
+    cleaned_content = _MULTI_NEWLINE_RE.sub("\n\n", cleaned_content)
+    return cleaned_content.strip()

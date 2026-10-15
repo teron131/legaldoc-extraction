@@ -1,0 +1,113 @@
+Equipment Loan Packet
+
+1. Overview
+
+Date: 2032-04-16
+
+Source documents: Document A, Document B
+
+This fictional packet sets out conditions for lending portable observation kits and managing a shared activity area during practice sessions. Document A governs equipment custody. Document B governs the room and activity schedule. They are separate source documents; identical clause numbers do not create shared obligations.
+
+All roles, dates, obligations, and procedures in this packet are invented. The packet exists solely to demonstrate document processing. It is not advice, a model agreement for adoption, or a description of a real organization.
+
+2. Clauses
+
+Document A - Equipment agreement
+
+4. Equipment return
+
+4.1 The borrower must return all portable observation kits, accessories, and kit cases within two days after the scheduled activity ends. Return is complete only when the receiving steward records the items and acknowledges receipt. Leaving items beside a locked storage cabinet does not constitute return.
+
+4.2 Before accepting an item, the receiving steward must compare its visible inventory label with the checkout register and record any missing parts. Ordinary surface wear must be distinguished from damage that prevents the item from performing its intended function. The borrower may provide a short written explanation of any discrepancy.
+
+4.3 Exceptions to the return deadline apply only in the following cases. Each exception changes the deadline for the affected items and does not extend the loan of unrelated items. The steward must retain the exception with the original checkout entry.
+
+4.3(a) If the designated return point is inaccessible at the agreed time, the borrower must notify the steward before the deadline and retain the items securely until a replacement return appointment is offered.
+
+4.3(b) If an item is unsafe to transport, the borrower must stop using it, keep it separate from serviceable items, and ask the steward to arrange collection. The borrower must not dismantle the item in an attempt to make transportation easier.
+
+4.3(b)(i) The collection exception applies only to the unsafe item and accessories that cannot safely be separated from it. Other items remain subject to the original return deadline.
+
+4.4 The steward must close the checkout entry after receipt or collection and send a confirmation containing the returned inventory labels. An unresolved discrepancy must remain visible in the register until a responsible reviewer records its disposition.
+
+7. Shared access
+
+7.1 Access to portable observation kits is shared between scheduled groups. A group must reserve a collection window and may collect only the items listed in its reservation. A reservation does not grant exclusive use of the storage area or permission to remove items assigned to another group.
+
+7.2 When two approved reservations overlap, the steward must first offer equivalent available items. If no equivalent items are available, the earlier confirmed reservation takes priority. Emergency substitution requires a written change to both affected checkout entries.
+
+7.3 The following access controls form part of this clause. Each role is fictional and refers to a function rather than a named individual.
+
+| Role | Allowed action | Required record |
+| - | - | - |
+| Borrower | Collect reserved items | Checkout entry with inventory labels |
+| Steward | Approve a substitution | Reason and revised reservation |
+| Reviewer | Resolve a disputed return | Disposition linked to original entry |
+
+12. Record retention
+
+12.1 The steward must retain the checkout register, exception notices, and receipt confirmations for six months after the loan closes. Records must remain linked by the checkout identifier so that a reviewer can reconstruct the sequence without relying on recollection.
+
+12.2 At the end of that period, the steward must remove personal contact details and delete supporting notices unless an unresolved discrepancy requires a temporary hold. A hold must state its reason and review date; it must end when the discrepancy is resolved.
+
+Document B - Activity area agreement
+
+4. Area restoration
+
+4.1 The activity coordinator must restore the shared area within one hour after practice sessions finish. Restoration includes clearing work surfaces, returning movable partitions to their marked positions, and separating reusable materials from waste. Equipment return under Document A does not itself complete this obligation.
+
+4.2 The coordinator must walk through the area with the closing steward and record any unfinished restoration work. If the next scheduled group has already arrived, the coordinator must agree a safe boundary for the remaining work before continuing.
+
+4.3 Where a spill or damaged fitting makes part of the area unsafe, the coordinator must isolate that area and notify the closing steward. This exception permits delayed restoration only within the isolated boundary; all other surfaces remain subject to the one-hour deadline.
+
+7. Schedule changes
+
+7.1 A coordinator requesting a schedule change must submit the requested start time, end time, and expected attendance before the preceding activity finishes. A requested change becomes effective only after the scheduling steward confirms that the area and its access route are available.
+
+7.2 Confirmation must be communicated to both the incoming and outgoing coordinators. Silence, a provisional calendar entry, or possession of equipment does not amount to approval. Where a change is refused, the original schedule remains effective.
+
+7.3 A shortened activity must still reserve sufficient time for restoration. The scheduling steward must reject a change that would remove the restoration window, unless the following group expressly agrees to a revised handover.
+
+12. Attendance summaries
+
+12.1 The coordinator must record only the aggregate number of participants and the broad activity category after the session. Names, contact details, and individual attendance histories must not be included in the summary.
+
+12.2 Aggregate summaries may be retained for twelve months to compare use of the area across seasons. A corrected total must retain a short reason for the correction. Detailed sign-in sheets, if temporarily used for headcounts, must be destroyed after the aggregate total is confirmed.
+
+12.3 Attendance reporting is independent of the equipment register in Document A. The two records must not be joined to reconstruct a participant-level history.
+
+3. Mitigations
+
+Document A
+
+4. Return of borrowed items
+
+Mitigation 1: Maintain a checkout register with inventory labels and a scheduled return reminder. Record receipt before closing each loan. Use an exception field for an inaccessible return point or unsafe item, and keep unaffected items on their original deadline.
+
+7. Access to shared equipment
+
+12. Keeping loan records
+
+Mitigation 2: Use a shared reservation and checkout ledger. Record approved substitutions and preserve the linked receipt, exception, and review entries for six months. Schedule a removal review at expiry and require a dated reason for any temporary hold.
+
+Document B
+
+4. Restoring the activity area
+
+Mitigation 3: Reserve a closing walkthrough and use a restoration checklist. Mark unsafe boundaries, log unfinished work, and obtain confirmation from the closing steward before handing the area to the next group.
+
+7. Changes to activity times
+
+Mitigation 4: Require explicit scheduling approval and notify both affected coordinators. Preserve the restoration window and keep the original schedule active until the replacement has been confirmed.
+
+12. Aggregate participation reporting
+
+Mitigation 5: Store aggregate attendance only, review corrected totals, and schedule removal of temporary headcount sheets after confirmation. Keep the attendance summary separate from the equipment ledger.
+
+Outdoor weather monitoring
+
+Mitigation 6: Check fictional outdoor conditions before an optional open-air demonstration. No clause in this packet imposes a weather-monitoring duty; this header intentionally has no matching source clause.
+
+4. Notes
+
+Demonstration note: Clause 99. Decorative banners is an intentionally irrelevant reference in this excluded section. It must not become a clause selection or a mitigation. This entire packet is synthetic; no text was adapted from a private agreement.

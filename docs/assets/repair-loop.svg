@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="470" viewBox="0 0 1080 470" role="img" aria-labelledby="title desc">
+  <title id="title">Repair agent passes</title>
+  <desc id="desc">Four illustrative passes of the repair agent over one working copy: five edits, then two, then one, then none left, at which point the copy is kept. Safeguards: edits cite line hashes so stale edits are rejected; MAX_FIXER_TURNS caps a session and keeps the last fully reread copy; the source PDF is never edited.</desc>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#cbd1d4"/></pattern>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#151719"/></marker>
+    <style>
+  .sans { font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", ui-sans-serif, system-ui, Arial, sans-serif; }
+  .mono { font-family: "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace; }
+  .ink { fill: #151719; }
+  .muted { fill: #5d646a; }
+  .white { fill: #ffffff; }
+  .lav { fill: #dce3ff; }
+  .invmuted { fill: #d8dde0; }
+  .lime { fill: #b9f227; }
+  .coral { fill: #c93a28; }
+  .teal { fill: #1d7a6e; }
+  .flow { fill: none; stroke: #151719; stroke-width: 2.5; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow); }
+</style>
+  </defs>
+  <rect width="1080" height="470" fill="#f7f8f5"/>
+  <rect width="1080" height="470" fill="url(#grid)" opacity="0.24"/>
+<g id="header"><text x="38" y="54" class="sans ink" font-size="12" font-weight="700" letter-spacing="1.5">LEGALDOC EXTRACTION / REPAIR AGENT</text></g>
+<text x="38" y="110" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">PASSES OVER ONE WORKING COPY</text><text x="330.8" y="110" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">OPENAI AGENTS SDK · ILLUSTRATIVE COUNTS</text><line x1="688.2" y1="106" x2="1042" y2="106" stroke="#c5cbce"/>
+<g id="passes">
+<rect x="38" y="128" width="222" height="196" fill="#ffffff" stroke="#151719" stroke-width="2"/>
+<rect x="38" y="128" width="222" height="30" fill="#ff6b57" stroke="#151719" stroke-width="2"/>
+<text x="52" y="147.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">PASS 1 · 5 EDITS</text>
+<rect x="56" y="173" width="167.4" height="10" fill="#eef1f2"/>
+<rect x="56" y="193" width="137.6" height="10" fill="#eef1f2"/>
+<rect x="56" y="213" width="156.2" height="10" fill="#eef1f2"/>
+<rect x="56" y="233" width="111.6" height="10" fill="#eef1f2"/>
+<rect x="56" y="253" width="163.7" height="10" fill="#eef1f2"/>
+<rect x="56" y="273" width="130.2" height="10" fill="#eef1f2"/>
+<rect x="56" y="293" width="152.5" height="10" fill="#eef1f2"/>
+<path d="M78,178 H152" stroke="#ff6b57" stroke-width="3" stroke-linecap="square"/>
+<path d="M164,204 q 12 10 24 0" fill="none" stroke="#ff6b57" stroke-width="3"/>
+<path d="M126,245 L133,233 L140,245" fill="none" stroke="#ff6b57" stroke-width="3" stroke-linejoin="miter"/>
+<path d="M78,258 H152" stroke="#ff6b57" stroke-width="3" stroke-linecap="square"/>
+<rect x="62" y="288" width="140" height="20" fill="none" stroke="#ff6b57" stroke-width="2.5"/>
+<path class="flow" d="M260,226.0 H298"/>
+<rect x="299" y="128" width="222" height="196" fill="#ffffff" stroke="#151719" stroke-width="2"/>
+<rect x="299" y="128" width="222" height="30" fill="#ffb3a7" stroke="#151719" stroke-width="2"/>
+<text x="313" y="147.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">PASS 2 · 2 EDITS</text>
+<rect x="317" y="173" width="167.4" height="10" fill="#eef1f2"/>
+<rect x="317" y="193" width="137.6" height="10" fill="#eef1f2"/>
+<rect x="317" y="213" width="156.2" height="10" fill="#eef1f2"/>
+<rect x="317" y="233" width="111.6" height="10" fill="#eef1f2"/>
+<rect x="317" y="253" width="163.7" height="10" fill="#eef1f2"/>
+<rect x="317" y="273" width="130.2" height="10" fill="#eef1f2"/>
+<rect x="317" y="293" width="152.5" height="10" fill="#eef1f2"/>
+<path d="M387,225 L394,213 L401,225" fill="none" stroke="#ff6b57" stroke-width="3" stroke-linejoin="miter"/>
+<path d="M339,278 H413" stroke="#ff6b57" stroke-width="3" stroke-linecap="square"/>
+<path class="flow" d="M521,226.0 H559"/>
+<rect x="560" y="128" width="222" height="196" fill="#ffffff" stroke="#151719" stroke-width="2"/>
+<rect x="560" y="128" width="222" height="30" fill="#ffd9d3" stroke="#151719" stroke-width="2"/>
+<text x="574" y="147.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">PASS 3 · 1 EDIT</text>
+<rect x="578" y="173" width="167.4" height="10" fill="#eef1f2"/>
+<rect x="578" y="193" width="137.6" height="10" fill="#eef1f2"/>
+<rect x="578" y="213" width="156.2" height="10" fill="#eef1f2"/>
+<rect x="578" y="233" width="111.6" height="10" fill="#eef1f2"/>
+<rect x="578" y="253" width="163.7" height="10" fill="#eef1f2"/>
+<rect x="578" y="273" width="130.2" height="10" fill="#eef1f2"/>
+<rect x="578" y="293" width="152.5" height="10" fill="#eef1f2"/>
+<path d="M686,264 q 12 10 24 0" fill="none" stroke="#ff6b57" stroke-width="3"/>
+<path class="flow" d="M782,226.0 H820"/>
+<rect x="821" y="128" width="222" height="196" fill="#ffffff" stroke="#151719" stroke-width="2"/>
+<rect x="821" y="128" width="222" height="30" fill="#b9f227" stroke="#151719" stroke-width="2"/>
+<text x="835" y="147.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">PASS 4 · NONE LEFT</text>
+<rect x="839" y="173" width="167.4" height="10" fill="#eef1f2"/>
+<rect x="839" y="193" width="137.6" height="10" fill="#eef1f2"/>
+<rect x="839" y="213" width="156.2" height="10" fill="#eef1f2"/>
+<rect x="839" y="233" width="111.6" height="10" fill="#eef1f2"/>
+<rect x="839" y="253" width="163.7" height="10" fill="#eef1f2"/>
+<rect x="839" y="273" width="130.2" height="10" fill="#eef1f2"/>
+<rect x="839" y="293" width="152.5" height="10" fill="#eef1f2"/>
+<rect x="906.0" y="215.0" width="52" height="52" fill="#b9f227" stroke="#151719" stroke-width="2"/>
+<path d="M919.0,242.0 L928.0,251.0 L946.0,231.0" fill="none" stroke="#151719" stroke-width="4" stroke-linecap="square"/>
+</g>
+<text x="38" y="368" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">SAFEGUARDS</text><text x="158" y="368" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">SAME RULES FOR MARKDOWN AND JSON</text><line x1="455.2" y1="364" x2="1042" y2="364" stroke="#c5cbce"/>
+<rect x="38" y="384" width="324" height="58" fill="#eef1f2"/>
+<text x="52" y="407" class="sans ink" font-size="14" font-weight="800">Edits cite line hashes</text>
+<text x="52" y="428" class="sans muted" font-size="12" font-weight="700">A stale edit is rejected, never misapplied</text>
+<rect x="378" y="384" width="324" height="58" fill="#eef1f2"/>
+<text x="392" y="407" class="sans ink" font-size="14" font-weight="800">MAX_FIXER_TURNS caps a session</text>
+<text x="392" y="428" class="sans muted" font-size="12" font-weight="700">At the cap, the last fully reread copy is kept</text>
+<rect x="718" y="384" width="324" height="58" fill="#eef1f2"/>
+<text x="732" y="407" class="sans ink" font-size="14" font-weight="800">The source PDF is never edited</text>
+<text x="732" y="428" class="sans muted" font-size="12" font-weight="700">Only the working copy changes</text>
+</svg>

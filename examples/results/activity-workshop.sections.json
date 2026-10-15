@@ -1,0 +1,19 @@
+{
+  "markdown_sha256": "3b5885300e375988c18ebc7bff958ce9aebe8475d930b6cb72fb8812266ddd79",
+  "sections": {
+    "overview": {
+      "start_line": 5,
+      "end_line": 14
+    },
+    "mitigation": {
+      "start_line": 83,
+      "end_line": 114
+    },
+    "clause": [
+      {
+        "start_line": 15,
+        "end_line": 82
+      }
+    ]
+  }
+}

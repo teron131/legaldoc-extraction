@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="662" viewBox="0 0 1080 662" role="img" aria-labelledby="title desc">
+  <title id="title">LegalDoc Extraction pipeline</title>
+  <desc id="desc">Flowchart of one PDF through two LangGraph workflows. Loader graph: PDF artifact, vision OCR (model; a truncated reply is re-read in smaller chunks), merge in page order (code), repair agent loop fixes OCR seams (edits must cite line hashes and the section map must fit the headings), producing cached Markdown with a section map. Extractor graph: slice sections with 3 lines of context (code; the map must fit the text or the agent reruns), overview and mitigations (model; schema-validated), clause pointers guided by mitigation headers (model; start and end references only), copy the referenced lines verbatim with Hashline (code; both references must match their line hashes), match by lexical and embedding similarity (code; best score of at least 0.5 is paired, else left empty), repair agent loop tidies the JSON rows (must parse with the same shape and be fully reread), producing canonical JSON with one row per clause, rendered as JSON, CSV or XLSX on download.</desc>
+  <defs>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="#cbd1d4"/></pattern>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10.5" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 L11 6 L1 11 Z" fill="#151719"/></marker>
+    <style>
+  .sans { font-family: "Avenir Next", "Helvetica Neue", "Segoe UI", ui-sans-serif, system-ui, Arial, sans-serif; }
+  .mono { font-family: "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, monospace; }
+  .ink { fill: #151719; }
+  .muted { fill: #5d646a; }
+  .white { fill: #ffffff; }
+  .lav { fill: #dce3ff; }
+  .invmuted { fill: #d8dde0; }
+  .lime { fill: #b9f227; }
+  .coral { fill: #c93a28; }
+  .teal { fill: #1d7a6e; }
+  .flow { fill: none; stroke: #151719; stroke-width: 2.5; stroke-linecap: square; stroke-linejoin: miter; marker-end: url(#arrow); }
+</style>
+  </defs>
+  <rect width="1080" height="662" fill="#f7f8f5"/>
+  <rect width="1080" height="662" fill="url(#grid)" opacity="0.24"/>
+<g id="header"><text x="38" y="54" class="sans ink" font-size="12" font-weight="700" letter-spacing="1.5">LEGALDOC EXTRACTION / PIPELINE</text><rect x="468" y="43" width="13" height="13" fill="#ff6b57" stroke="#151719" stroke-width="1.5"/><text x="488" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">MODEL</text><rect x="552.0" y="43" width="13" height="13" fill="#eef1f2" stroke="#151719" stroke-width="1.5"/><text x="572" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CODE</text><rect x="627.6" y="43" width="13" height="13" fill="#151719"/><circle cx="634.1" cy="49.5" r="2.6" fill="#b9f227"/><text x="647.6" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">AGENT LOOP</text><rect x="753.6" y="43" width="13" height="13" fill="#f7c948" stroke="#151719" stroke-width="1.5"/><text x="773.6" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">ARTIFACT</text><rect x="862.8000000000001" y="43" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M865.8000000000001,49.8 L868.4000000000001,52.4 L873.0000000000001,46.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="882.8" y="54" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CHECK</text></g>
+<g id="lanes">
+<text x="38" y="110" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">LOADER GRAPH</text><text x="177.2" y="110" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">LANGGRAPH · 2 NODES</text><line x1="362.6" y1="106" x2="1042" y2="106" stroke="#c5cbce"/>
+<text x="38" y="314" class="sans ink" font-size="12" font-weight="800" letter-spacing="1.55">EXTRACTOR GRAPH</text><text x="206" y="314" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">LANGGRAPH · 6 NODES</text><line x1="391.4" y1="310" x2="1042" y2="310" stroke="#c5cbce"/>
+</g>
+<g id="flow">
+<path class="flow" d="M218,175.0 H243"/>
+<path class="flow" d="M424,175.0 H449"/>
+<path class="flow" d="M630,175.0 H655"/>
+<path class="flow" d="M836,175.0 H861"/>
+<path class="flow" d="M218,379.0 H243"/>
+<path class="flow" d="M424,379.0 H449"/>
+<path class="flow" d="M630,379.0 H655"/>
+<path class="flow" d="M836,379.0 H861"/>
+<path class="flow" d="M218,555.0 H243"/>
+<path class="flow" d="M424,555.0 H449"/>
+<path class="flow" d="M1042,175.0 H1060 V284 H22 V379.0 H37"/>
+<path class="flow" d="M1042,379.0 H1060 V486 H22 V555.0 H37"/>
+<path class="flow" d="M630,555.0 H655"/>
+<path class="flow" d="M606,422 V470 H680 V423"/>
+<rect x="614.6" y="461" width="56.8" height="18" fill="#151719"/><text x="643" y="473.5" class="mono white" font-size="9.5" font-weight="800" text-anchor="middle" letter-spacing="0.45">HEADERS</text>
+</g>
+<g id="steps">
+<g id="step-A0"><rect x="38" y="132" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="38" y="132" width="180" height="26" fill="#f7c948" stroke="#151719" stroke-width="2"/><text x="52" y="149.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">ARTIFACT</text><text x="52" y="182" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">PDF</text><text x="52" y="203" class="sans muted" font-size="12.5" font-weight="700">Scanned pages</text>
+</g>
+<g id="step-A1"><rect x="244" y="132" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="244" y="132" width="180" height="26" fill="#ff6b57" stroke="#151719" stroke-width="2"/><text x="258" y="149.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">MODEL</text><text x="258" y="182" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Vision OCR</text><text x="258" y="203" class="sans muted" font-size="12.5" font-weight="700">Chunks in parallel</text>
+<rect x="244" y="231" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M247,237.8 L249.6,240.4 L254.2,234.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="265" y="242" class="sans ink" font-size="12" font-weight="800">Truncated? Re-read</text><text x="265" y="258" class="sans muted" font-size="12" font-weight="700">in smaller chunks</text>
+</g>
+<g id="step-A2"><rect x="450" y="132" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="450" y="132" width="180" height="26" fill="#eef1f2" stroke="#151719" stroke-width="2"/><text x="464" y="149.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CODE</text><text x="464" y="182" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Merge</text><text x="464" y="203" class="sans muted" font-size="12.5" font-weight="700">In page order</text>
+</g>
+<g id="step-A3"><rect x="656" y="132" width="180" height="86" fill="#151719"/><circle cx="673" cy="146" r="5" fill="#b9f227"/><text x="685" y="150" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">AGENT LOOP</text><text x="670" y="182" class="sans white" font-size="16" font-weight="800" letter-spacing="-0.2">Repair agent</text><text x="670" y="203" class="sans invmuted" font-size="12.5" font-weight="700">Fixes OCR seams</text>
+<rect x="656" y="231" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M659,237.8 L661.6,240.4 L666.2,234.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="677" y="242" class="sans ink" font-size="12" font-weight="800">Edits must cite hashes</text><text x="677" y="258" class="sans muted" font-size="12" font-weight="700">map must fit headings</text>
+</g>
+<g id="step-A4"><rect x="862" y="132" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="862" y="132" width="180" height="26" fill="#f7c948" stroke="#151719" stroke-width="2"/><text x="876" y="149.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">ARTIFACT</text><text x="876" y="182" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Markdown</text><text x="876" y="203" class="sans muted" font-size="12.5" font-weight="700">+ section map, cached</text>
+</g>
+<g id="step-B0"><rect x="38" y="336" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="38" y="336" width="180" height="26" fill="#eef1f2" stroke="#151719" stroke-width="2"/><text x="52" y="353.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CODE</text><text x="52" y="386" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Slice sections</text><text x="52" y="407" class="sans muted" font-size="12.5" font-weight="700">±3 lines of context</text>
+<rect x="38" y="435" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M41,441.8 L43.6,444.4 L48.2,438.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="59" y="446" class="sans ink" font-size="12" font-weight="800">Map must fit the text</text><text x="59" y="462" class="sans muted" font-size="12" font-weight="700">or the agent reruns</text>
+</g>
+<g id="step-B1"><rect x="244" y="336" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="244" y="336" width="180" height="26" fill="#ff6b57" stroke="#151719" stroke-width="2"/><text x="258" y="353.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">MODEL</text><text x="258" y="386" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Overview</text><text x="258" y="407" class="sans muted" font-size="12.5" font-weight="700">Date, documents</text>
+<rect x="244" y="435" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M247,441.8 L249.6,444.4 L254.2,438.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="265" y="446" class="sans ink" font-size="12" font-weight="800">Schema-validated</text>
+</g>
+<g id="step-B2"><rect x="450" y="336" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="450" y="336" width="180" height="26" fill="#ff6b57" stroke="#151719" stroke-width="2"/><text x="464" y="353.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">MODEL</text><text x="464" y="386" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Mitigations</text><text x="464" y="407" class="sans muted" font-size="12.5" font-weight="700">Bodies + headers</text>
+<rect x="450" y="435" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M453,441.8 L455.6,444.4 L460.2,438.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="471" y="446" class="sans ink" font-size="12" font-weight="800">Schema-validated</text>
+</g>
+<g id="step-B3"><rect x="656" y="336" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="656" y="336" width="180" height="26" fill="#ff6b57" stroke="#151719" stroke-width="2"/><text x="670" y="353.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">MODEL</text><text x="670" y="386" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Clause pointers</text><text x="670" y="407" class="sans muted" font-size="12.5" font-weight="700">Start/end refs only</text>
+</g>
+<g id="step-B4"><rect x="862" y="336" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="862" y="336" width="180" height="26" fill="#eef1f2" stroke="#151719" stroke-width="2"/><text x="876" y="353.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CODE</text><text x="876" y="386" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Copy</text><text x="876" y="407" class="sans muted" font-size="12.5" font-weight="700">Hashline, verbatim</text>
+<rect x="862" y="435" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M865,441.8 L867.6,444.4 L872.2,438.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="883" y="446" class="sans ink" font-size="12" font-weight="800">Both refs must match</text><text x="883" y="462" class="sans muted" font-size="12" font-weight="700">their line hashes</text>
+</g>
+<g id="step-C0"><rect x="38" y="512" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="38" y="512" width="180" height="26" fill="#eef1f2" stroke="#151719" stroke-width="2"/><text x="52" y="529.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">CODE</text><text x="52" y="562" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Match</text><text x="52" y="583" class="sans muted" font-size="12.5" font-weight="700">Lexical + embedding</text>
+<rect x="38" y="611" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M41,617.8 L43.6,620.4 L48.2,614.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="59" y="622" class="sans ink" font-size="12" font-weight="800">Best ≥ 0.5 is paired,</text><text x="59" y="638" class="sans muted" font-size="12" font-weight="700">else left empty</text>
+</g>
+<g id="step-C1"><rect x="244" y="512" width="180" height="86" fill="#151719"/><circle cx="261" cy="526" r="5" fill="#b9f227"/><text x="273" y="530" class="sans lav" font-size="10.5" font-weight="800" letter-spacing="1.25">AGENT LOOP</text><text x="258" y="562" class="sans white" font-size="16" font-weight="800" letter-spacing="-0.2">Repair agent</text><text x="258" y="583" class="sans invmuted" font-size="12.5" font-weight="700">Tidies the JSON rows</text>
+<rect x="244" y="611" width="13" height="13" fill="#b9f227" stroke="#151719" stroke-width="1.5"/><path d="M247,617.8 L249.6,620.4 L254.2,614.8" fill="none" stroke="#151719" stroke-width="2" stroke-linecap="square"/><text x="265" y="622" class="sans ink" font-size="12" font-weight="800">Must parse, same shape;</text><text x="265" y="638" class="sans muted" font-size="12" font-weight="700">kept once fully reread</text>
+</g>
+<g id="step-C2"><rect x="450" y="512" width="180" height="86" fill="#ffffff" stroke="#151719" stroke-width="2"/><rect x="450" y="512" width="180" height="26" fill="#f7c948" stroke="#151719" stroke-width="2"/><text x="464" y="529.5" class="sans ink" font-size="10.5" font-weight="800" letter-spacing="1.25">ARTIFACT</text><text x="464" y="562" class="sans ink" font-size="16" font-weight="800" letter-spacing="-0.2">Canonical JSON</text><text x="464" y="583" class="sans muted" font-size="12.5" font-weight="700">One row per clause</text>
+</g>
+<text x="656" y="534" class="sans muted" font-size="10.5" font-weight="800" letter-spacing="1.25">ON DOWNLOAD</text>
+<rect x="656" y="544" width="54" height="34" fill="#f7f8f5" stroke="#151719" stroke-width="1.5"/><text x="683" y="565.5" class="mono ink" font-size="12.5" font-weight="800" text-anchor="middle">JSON</text>
+<rect x="718" y="544" width="54" height="34" fill="#f7f8f5" stroke="#151719" stroke-width="1.5"/><text x="745" y="565.5" class="mono ink" font-size="12.5" font-weight="800" text-anchor="middle">CSV</text>
+<rect x="780" y="544" width="54" height="34" fill="#f7f8f5" stroke="#151719" stroke-width="1.5"/><text x="807" y="565.5" class="mono ink" font-size="12.5" font-weight="800" text-anchor="middle">XLSX</text>
+</g>
+</svg>

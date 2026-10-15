@@ -1,0 +1,17 @@
+.git
+.gitignore
+.env
+.env.*
+**/.env
+**/.env.*
+.venv
+.cache
+.pnpm-store
+.playwright-cli
+tests
+data_input
+data_output
+frontend/dist
+frontend/node_modules
+logs
+node_modules

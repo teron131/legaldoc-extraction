@@ -1,0 +1,247 @@
+/* Carries the master-ui-aligned neutral tokens, shared control styles, and the interaction floor for the extraction workspace. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --muted: 240 4.8% 95.9%;
+  --muted-foreground: 240 3.8% 46.1%;
+  --primary: 240 5.9% 10%;
+  --primary-foreground: 0 0% 98%;
+  --accent: 240 4.8% 95.9%;
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 98%;
+  --success: 142 71% 35%;
+  --warning: 32 95% 44%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --ring: 240 10% 3.9%;
+  --sidebar: 0 0% 98%;
+  --highlight: 48 96% 89%;
+  --highlight-strong: 45 93% 47%;
+  --radius: 0.75rem;
+  --header-height: 44px;
+  --sidebar-width: 15rem;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 5.5%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 72% 58%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 142 60% 50%;
+    --warning: 38 92% 55%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 19%;
+    --ring: 240 4.9% 83.9%;
+    --sidebar: 240 5.9% 8%;
+    --highlight: 48 70% 28%;
+    --highlight-strong: 45 93% 55%;
+    color-scheme: dark;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html {
+    overflow-x: clip;
+  }
+
+  body {
+    margin: 0;
+    min-width: 360px;
+    min-height: 100dvh;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: theme("fontFamily.sans");
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "ss01";
+  }
+
+  ::selection {
+    background: hsl(var(--highlight));
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 1;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md px-3.5 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50;
+  }
+
+  .btn svg {
+    @apply size-4 shrink-0;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-accent hover:text-accent-foreground;
+  }
+
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+  }
+
+  .btn-sm {
+    @apply h-8 px-2.5 text-xs;
+  }
+
+  .btn-lg {
+    @apply h-10 px-4;
+  }
+
+  .btn-icon {
+    @apply h-8 w-8 px-0;
+  }
+
+  .field {
+    @apply block h-9 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground shadow-none transition-colors focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring;
+  }
+
+  .field-label {
+    @apply text-xs font-medium text-muted-foreground;
+  }
+
+  .panel {
+    @apply rounded-xl border bg-card;
+  }
+
+  .panel-header {
+    @apply flex min-h-12 items-center justify-between gap-3 border-b px-4;
+  }
+
+  .panel-title {
+    @apply flex items-center gap-2 text-sm font-semibold;
+  }
+
+  .count {
+    @apply inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-muted px-1.5 text-[11px] font-medium tabular-nums text-muted-foreground;
+  }
+
+  .segmented {
+    @apply inline-flex rounded-md bg-muted p-0.5;
+  }
+
+  .segmented button {
+    @apply inline-flex h-7 items-center gap-1.5 rounded-[calc(var(--radius)-4px)] px-2.5 text-xs font-medium text-muted-foreground transition-colors;
+  }
+
+  .segmented button[aria-pressed="true"] {
+    @apply bg-background text-foreground shadow-sm;
+  }
+
+  .check {
+    @apply h-4 w-4 rounded border-input bg-background text-primary focus:ring-ring focus:ring-offset-0;
+  }
+
+  .mark {
+    @apply rounded-sm bg-highlight px-px text-current;
+  }
+
+  .mark-active {
+    @apply rounded-sm bg-highlight-strong px-px font-medium text-black;
+  }
+}
+
+/* Range inputs keep the native control for keyboard and assistive technology; only the track and thumb are restyled. */
+input[type="range"].range {
+  appearance: none;
+  width: 100%;
+  height: 1rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"].range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: hsl(var(--muted));
+}
+
+input[type="range"].range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: hsl(var(--muted));
+}
+
+input[type="range"].range::-webkit-slider-thumb {
+  appearance: none;
+  margin-top: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid hsl(var(--primary));
+  background: hsl(var(--background));
+}
+
+input[type="range"].range::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  border: 2px solid hsl(var(--primary));
+  background: hsl(var(--background));
+}
+
+.thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border)) transparent;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "sortImports": true,
+  "sortPackageJson": false,
+  "overrides": [
+    {
+      "files": ["**/*.json", "**/*.jsonc"],
+      "options": {
+        "trailingComma": "none"
+      }
+    }
+  ],
+  "ignorePatterns": ["*.md", "*.markdown", "*.mdx"]
+}

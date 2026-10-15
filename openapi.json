@@ -1,0 +1,1122 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LegalDoc Extraction",
+    "version": "0.19.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Index",
+        "description": "Serve the app entrypoint for each client route so navigation survives a full reload.",
+        "operationId": "index__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/upload": {
+      "get": {
+        "summary": "Uploaded Files",
+        "description": "List stored PDFs so the runner's input list survives navigation and page reloads.",
+        "operationId": "uploaded_files_upload_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Upload",
+        "description": "Upload PDF files.",
+        "operationId": "upload_upload_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_upload_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/run": {
+      "post": {
+        "summary": "Run",
+        "description": "Start a pipeline run.",
+        "operationId": "run_run_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/run/{run_id}/stop": {
+      "post": {
+        "summary": "Stop",
+        "description": "Request cancellation of this generation while its workers finish exiting.",
+        "operationId": "stop_run__run_id__stop_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunSnapshot"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs": {
+      "get": {
+        "summary": "Logs",
+        "description": "Get recent log lines and running status.",
+        "operationId": "logs_logs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logs/stream": {
+      "get": {
+        "summary": "Logs Stream",
+        "description": "Resume after the last acknowledged SSE record, falling back to the initial snapshot cursor.",
+        "operationId": "logs_stream_logs_stream_get",
+        "parameters": [
+          {
+            "name": "after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "After"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "last-event-id",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Last-Event-Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/env": {
+      "get": {
+        "summary": "Get Env",
+        "description": "Get current environment configuration.",
+        "operationId": "get_env_env_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnvResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Set Env",
+        "description": "Persist settings and write-only Custom credentials; an omitted or blank key preserves the saved credential.",
+        "operationId": "set_env_env_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnvUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/platforms": {
+      "get": {
+        "summary": "Get Platforms",
+        "description": "Get platform configurations for UI.",
+        "operationId": "get_platforms_platforms_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformDefaultsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outputs": {
+      "get": {
+        "summary": "List Outputs",
+        "description": "List canonical results newest first, including formats rendered only on download.",
+        "operationId": "list_outputs_outputs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Output",
+        "description": "Delete a cached output.",
+        "operationId": "delete_output_outputs_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outputs/retry": {
+      "post": {
+        "summary": "Retry Output",
+        "description": "Retry a cached output.",
+        "operationId": "retry_output_outputs_retry_post",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StatusResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outputs/search": {
+      "get": {
+        "summary": "Search Output Rows",
+        "description": "Search cached output metadata and clause rows case-insensitively across all documents.",
+        "operationId": "search_output_rows_outputs_search_get",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "title": "Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputSearchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outputs/preview": {
+      "get": {
+        "summary": "Preview Output",
+        "description": "Preview a cached output.",
+        "operationId": "preview_output_outputs_preview_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "title": "Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutputPreviewResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/outputs/download": {
+      "get": {
+        "summary": "Download Output",
+        "description": "Download a cached output.",
+        "operationId": "download_output_outputs_download_get",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "title": "Id"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^(json|csv|xlsx)$",
+              "default": "json",
+              "title": "Format"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BatchResult": {
+        "properties": {
+          "succeeded": {
+            "type": "integer",
+            "title": "Succeeded",
+            "default": 0
+          },
+          "failed": {
+            "type": "integer",
+            "title": "Failed",
+            "default": 0
+          },
+          "skipped": {
+            "type": "integer",
+            "title": "Skipped",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "BatchResult",
+        "description": "Report document outcomes without treating handled per-file failures as a successful batch."
+      },
+      "Body_upload_upload_post": {
+        "properties": {
+          "files": {
+            "items": {
+              "type": "string",
+              "contentMediaType": "application/octet-stream"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "type": "object",
+        "required": ["files"],
+        "title": "Body_upload_upload_post"
+      },
+      "EnvResponse": {
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["Vercel AI Gateway", "Gemini", "Custom"],
+            "title": "Platform"
+          },
+          "llm": {
+            "type": "string",
+            "title": "Llm"
+          },
+          "embedding_model": {
+            "type": "string",
+            "title": "Embedding Model"
+          },
+          "max_fixer_turns": {
+            "type": "integer",
+            "title": "Max Fixer Turns"
+          },
+          "llm_base_url": {
+            "type": "string",
+            "title": "Llm Base Url"
+          },
+          "llm_api_key_configured": {
+            "type": "boolean",
+            "title": "Llm Api Key Configured",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EnvResponse",
+        "description": "Public environment configuration returned to the UI."
+      },
+      "EnvUpdateRequest": {
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["Vercel AI Gateway", "Gemini", "Custom"],
+            "title": "Platform"
+          },
+          "llm": {
+            "type": "string",
+            "title": "Llm"
+          },
+          "embedding_model": {
+            "type": "string",
+            "title": "Embedding Model"
+          },
+          "max_fixer_turns": {
+            "type": "integer",
+            "title": "Max Fixer Turns",
+            "ge": 3,
+            "le": 30
+          },
+          "llm_base_url": {
+            "type": "string",
+            "title": "Llm Base Url"
+          },
+          "llm_api_key": {
+            "type": "string",
+            "format": "password",
+            "title": "Llm Api Key",
+            "writeOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "EnvUpdateRequest",
+        "description": "Request payload for updating persisted UI environment values."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LogsResponse": {
+        "properties": {
+          "lines": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Lines"
+          },
+          "running": {
+            "type": "boolean",
+            "title": "Running"
+          },
+          "cursor": {
+            "type": "integer",
+            "title": "Cursor"
+          },
+          "run": {
+            "$ref": "#/components/schemas/RunSnapshot"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["lines", "running", "cursor", "run"],
+        "title": "LogsResponse",
+        "description": "Recent backend log lines and active-run status."
+      },
+      "OutputFileSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "source_name": {
+            "type": "string",
+            "title": "Source Name"
+          },
+          "document_id": {
+            "type": "string",
+            "title": "Document Id"
+          },
+          "canonical_format": {
+            "type": "string",
+            "enum": ["json", "csv", "xlsx"],
+            "title": "Canonical Format"
+          },
+          "canonical_path": {
+            "type": "string",
+            "title": "Canonical Path"
+          },
+          "canonical_relative_path": {
+            "type": "string",
+            "title": "Canonical Relative Path"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes"
+          },
+          "modified_at": {
+            "type": "integer",
+            "title": "Modified At"
+          },
+          "preview_available": {
+            "type": "boolean",
+            "title": "Preview Available"
+          },
+          "row_count": {
+            "type": "integer",
+            "title": "Row Count"
+          },
+          "available_export_formats": {
+            "items": {
+              "type": "string",
+              "enum": ["json", "csv", "xlsx"]
+            },
+            "type": "array",
+            "title": "Available Export Formats"
+          },
+          "generated_on_request_formats": {
+            "items": {
+              "type": "string",
+              "enum": ["json", "csv", "xlsx"]
+            },
+            "type": "array",
+            "title": "Generated On Request Formats"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "source_name",
+          "document_id",
+          "canonical_format",
+          "canonical_path",
+          "canonical_relative_path",
+          "size_bytes",
+          "modified_at",
+          "preview_available",
+          "row_count",
+          "available_export_formats",
+          "generated_on_request_formats"
+        ],
+        "title": "OutputFileSummary",
+        "description": "Metadata for one cached canonical output."
+      },
+      "OutputPreviewResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "row_count": {
+            "type": "integer",
+            "title": "Row Count"
+          },
+          "rows": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Rows"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["id", "name", "row_count", "rows"],
+        "title": "OutputPreviewResponse",
+        "description": "Preview rows for one cached output."
+      },
+      "OutputSearchMatch": {
+        "properties": {
+          "output_id": {
+            "type": "string",
+            "title": "Output Id"
+          },
+          "output_name": {
+            "type": "string",
+            "title": "Output Name"
+          },
+          "row_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Row Index"
+          },
+          "matched_field": {
+            "type": "string",
+            "title": "Matched Field"
+          },
+          "occurrence_index": {
+            "type": "integer",
+            "title": "Occurrence Index"
+          },
+          "snippet": {
+            "type": "string",
+            "title": "Snippet"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "output_id",
+          "output_name",
+          "row_index",
+          "matched_field",
+          "occurrence_index",
+          "snippet"
+        ],
+        "title": "OutputSearchMatch",
+        "description": "One search hit across output metadata or rows."
+      },
+      "OutputSearchResponse": {
+        "properties": {
+          "matches": {
+            "items": {
+              "$ref": "#/components/schemas/OutputSearchMatch"
+            },
+            "type": "array",
+            "title": "Matches"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["matches"],
+        "title": "OutputSearchResponse",
+        "description": "Search response for cached outputs."
+      },
+      "OutputsResponse": {
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/OutputFileSummary"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["files"],
+        "title": "OutputsResponse",
+        "description": "List response for cached outputs."
+      },
+      "PlatformDefaultsItem": {
+        "properties": {
+          "llm": {
+            "type": "string",
+            "title": "Llm"
+          },
+          "embed": {
+            "type": "string",
+            "title": "Embed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["llm", "embed"],
+        "title": "PlatformDefaultsItem",
+        "description": "Public model defaults for one platform."
+      },
+      "PlatformDefaultsResponse": {
+        "properties": {
+          "Vercel AI Gateway": {
+            "$ref": "#/components/schemas/PlatformDefaultsItem"
+          },
+          "Gemini": {
+            "$ref": "#/components/schemas/PlatformDefaultsItem"
+          },
+          "Custom": {
+            "$ref": "#/components/schemas/PlatformDefaultsItem"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["Vercel AI Gateway", "Gemini", "Custom"],
+        "title": "PlatformDefaultsResponse",
+        "description": "Model defaults keyed by the supported platform names."
+      },
+      "RunRequest": {
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": ["Vercel AI Gateway", "Gemini", "Custom"],
+            "title": "Platform"
+          },
+          "max_concurrency": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Max Concurrency",
+            "default": 3
+          },
+          "max_fixer_turns": {
+            "type": "integer",
+            "maximum": 30.0,
+            "minimum": 3.0,
+            "title": "Max Fixer Turns",
+            "default": 30
+          },
+          "pages_per_chunk": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 1.0,
+            "title": "Pages Per Chunk",
+            "default": 3
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "RunRequest",
+        "description": "Request payload for starting a pipeline run."
+      },
+      "RunSnapshot": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id",
+            "default": ""
+          },
+          "status": {
+            "type": "string",
+            "enum": ["idle", "running", "stopping", "stopped", "completed", "partial", "failed"],
+            "title": "Status",
+            "default": "idle"
+          },
+          "result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BatchResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "RunSnapshot",
+        "description": "The current backend-owned run identity and outcome; a page reload does not create a new run."
+      },
+      "StatusResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["ok", "started", "busy"],
+            "title": "Status"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["status"],
+        "title": "StatusResponse",
+        "description": "Simple status response for mutations."
+      },
+      "UploadResponse": {
+        "properties": {
+          "saved": {
+            "type": "integer",
+            "title": "Saved"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["saved"],
+        "title": "UploadResponse",
+        "description": "Upload result summary."
+      },
+      "UploadedFileInfo": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "size": {
+            "type": "integer",
+            "title": "Size"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["id", "name", "size"],
+        "title": "UploadedFileInfo",
+        "description": "A stored input PDF whose identity survives browser refresh."
+      },
+      "UploadsResponse": {
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/UploadedFileInfo"
+            },
+            "type": "array",
+            "title": "Files"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": ["files"],
+        "title": "UploadsResponse",
+        "description": "Stored PDF inputs available to the next batch run."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

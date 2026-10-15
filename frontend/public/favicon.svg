@@ -1,0 +1,19 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>LegalDoc Extraction</title>
+  <path
+    d="M18 14C18 12.8954 18.8954 12 20 12H38L46 20V50C46 51.1046 45.1046 52 44 52H20C18.8954 52 18 51.1046 18 50V14Z"
+    fill="#ffffff"
+    stroke="#ff9500"
+    stroke-width="5"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M38 12V19C38 20.1046 38.8954 21 40 21H46"
+    stroke="#ff9500"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path d="M24 31H40" stroke="#ff9500" stroke-width="5" stroke-linecap="round"/>
+  <path d="M24 39H36" stroke="#ff9500" stroke-width="5" stroke-linecap="round"/>
+</svg>

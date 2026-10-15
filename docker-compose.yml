@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8000
+      FRONTEND_HOST: ${FRONTEND_HOST:-localhost}
+      FRONTEND_PORT: ${FRONTEND_PORT:-8000}
+    volumes:
+      - ./.env:/app/.env
+      - ./data_input:/app/data_input
+      - ./data_output:/app/data_output
+      - ./.cache:/app/.cache
+      - ./logs:/app/logs

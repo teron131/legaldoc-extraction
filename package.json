@@ -1,0 +1,16 @@
+{
+  "name": "legaldoc-extraction-workspace",
+  "private": true,
+  "packageManager": "pnpm@10.28.1",
+  "scripts": {
+    "generate:openapi": "uv run python scripts/export_openapi.py",
+    "generate:types": "pnpm --dir frontend run generate:types",
+    "generate:contracts": "pnpm run generate:openapi && pnpm run generate:types",
+    "build": "pnpm run generate:contracts && pnpm --dir frontend run build",
+    "dev": "pnpm --dir frontend run dev",
+    "format": "pnpm --dir frontend run format",
+    "format:check": "pnpm --dir frontend run format:check",
+    "lint": "pnpm --dir frontend run lint",
+    "lint:fix": "pnpm --dir frontend run lint:fix"
+  }
+}

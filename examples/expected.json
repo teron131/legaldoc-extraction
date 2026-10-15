@@ -1,0 +1,109 @@
+{
+  "provenance": "Authored expectations for entirely synthetic inputs; not model-produced extraction results.",
+  "fixtures": [
+    {
+      "pdf": "pdfs/equipment-loan.pdf",
+      "source": "sources/equipment-loan.json",
+      "expected_pages": 4,
+      "date": "2032-04-16",
+      "source_documents": ["Document A", "Document B"],
+      "expected_parent_clauses": [
+        {
+          "document": "Document A",
+          "number": "4",
+          "title": "Equipment return"
+        },
+        {
+          "document": "Document A",
+          "number": "7",
+          "title": "Shared access"
+        },
+        {
+          "document": "Document A",
+          "number": "12",
+          "title": "Record retention"
+        },
+        {
+          "document": "Document B",
+          "number": "4",
+          "title": "Area restoration"
+        },
+        {
+          "document": "Document B",
+          "number": "7",
+          "title": "Schedule changes"
+        },
+        {
+          "document": "Document B",
+          "number": "12",
+          "title": "Attendance summaries"
+        }
+      ],
+      "expected_mitigation_body_count": 6,
+      "expected_matched_header_count": 6,
+      "unmatched_header": "Outdoor weather monitoring",
+      "shared_mitigation_headers": ["7. Access to shared equipment", "12. Keeping loan records"],
+      "page_boundary_clause": {
+        "document": "Document A",
+        "number": "4",
+        "starts_on_page": 1,
+        "continues_on_page": 2,
+        "must_include": ["4.3(b)", "4.3(b)(i)", "4.4"]
+      },
+      "excluded_section": "4. Notes",
+      "excluded_clause_reference": "99. Decorative banners"
+    },
+    {
+      "pdf": "pdfs/activity-workshop.pdf",
+      "source": "sources/activity-workshop.json",
+      "expected_pages": 4,
+      "date": "2032-09-08",
+      "source_documents": ["Document A", "Document B"],
+      "expected_parent_clauses": [
+        {
+          "document": "Document A",
+          "number": "4",
+          "title": "Equipment return"
+        },
+        {
+          "document": "Document A",
+          "number": "7",
+          "title": "Shared access"
+        },
+        {
+          "document": "Document A",
+          "number": "12",
+          "title": "Record retention"
+        },
+        {
+          "document": "Document B",
+          "number": "4",
+          "title": "Area restoration"
+        },
+        {
+          "document": "Document B",
+          "number": "7",
+          "title": "Schedule changes"
+        },
+        {
+          "document": "Document B",
+          "number": "12",
+          "title": "Attendance summaries"
+        }
+      ],
+      "expected_mitigation_body_count": 6,
+      "expected_matched_header_count": 6,
+      "unmatched_header": "Outdoor weather monitoring",
+      "shared_mitigation_headers": ["7. Access to shared equipment", "12. Keeping loan records"],
+      "page_boundary_clause": {
+        "document": "Document A",
+        "number": "4",
+        "starts_on_page": 1,
+        "continues_on_page": 2,
+        "must_include": ["4.3(b)", "4.3(b)(i)", "4.4"]
+      },
+      "excluded_section": "4. Notes",
+      "excluded_clause_reference": "99. Decorative banners"
+    }
+  ]
+}
