@@ -53,7 +53,7 @@ class PipelineRunner:
         return self.state().active
 
     def start(self, target: Callable[..., BatchResult | None], *args: Any) -> bool:
-        """Reserve a generation and clear its log atomically; failed setup releases the reservation."""
+        """Return False while a run is active; otherwise reserve a generation and clear its log atomically, releasing the reservation if setup fails."""
         with self._lock:
             if self._run.active:
                 return False
@@ -77,7 +77,7 @@ class PipelineRunner:
         return True
 
     def stop(self, run_id: str) -> RunSnapshot | None:
-        """Keep the generation reserved until its workers exit; reject stale stop requests."""
+        """Return None for a stale run_id; an active generation stays reserved as stopping until its workers exit."""
         with self._lock:
             if not run_id or run_id != self._run.run_id:
                 return None

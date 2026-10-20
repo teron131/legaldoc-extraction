@@ -27,7 +27,7 @@ _CHAR_REPLACEMENTS = {
 
 
 def clean_markdown(content: str) -> str:
-    """Normalize markdown bullets, spacing, and noisy page-break artifacts."""
+    """Normalize OCR glyphs and spacing: curly quotes become straight, `"• Fee — due"` → `"- Fee - due"`, lines of spaced dashes such as `"- - - -"` are dropped, and runs of blank lines collapse to one."""
     if not content:
         return ""
 

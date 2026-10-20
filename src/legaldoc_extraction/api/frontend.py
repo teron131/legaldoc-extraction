@@ -31,7 +31,7 @@ def index() -> StreamingResponse:
 
 @router.get("/app-config.js", include_in_schema=False)
 def app_config() -> StreamingResponse:
-    """Serve runtime frontend configuration for the bundled app."""
+    """Read at request time so one frontend build works with any Keycloak deployment."""
     payload = f"window.__APP_CONFIG__ = {orjson.dumps(_frontend_runtime_config()).decode('utf-8')};\n"
     return StreamingResponse(
         BytesIO(payload.encode("utf-8")),
@@ -40,7 +40,6 @@ def app_config() -> StreamingResponse:
 
 
 def _require_frontend_build() -> None:
-    """Require the frontend build to exist."""
     if FRONTEND_INDEX_FILE.exists():
         return
     raise HTTPException(
@@ -50,7 +49,7 @@ def _require_frontend_build() -> None:
 
 
 def _frontend_runtime_config() -> dict[str, str]:
-    """Return frontend-safe runtime configuration."""
+    """Served to unauthenticated browsers, so never add secrets here."""
     return {
         "authEnabled": os.getenv("AUTH_ENABLED", ""),
         "keycloakUrl": os.getenv("KEYCLOAK_BASE_URL", ""),

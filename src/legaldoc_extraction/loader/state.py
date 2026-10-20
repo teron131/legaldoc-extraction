@@ -1,4 +1,4 @@
-"""State definitions for the PDF loader workflow."""
+"""Carry per-run loader settings, merged Markdown, chunk seams, and usage between loader graph stages."""
 
 from pydantic import BaseModel, Field
 
@@ -28,8 +28,6 @@ class LoaderInput(BaseModel):
 
 
 class LoaderOutput(BaseModel):
-    """Output for the PDF loader workflow."""
-
     merged_result: str | None = Field(default=None, description="Final merged markdown")
     total_input_tokens: int = Field(
         default=0, description="Total input tokens used across all LLM calls"
@@ -43,8 +41,6 @@ class LoaderOutput(BaseModel):
 
 
 class LoaderState(LoaderInput, LoaderOutput):
-    """State for the PDF loader workflow."""
-
     chunk_bridge_lines: list[int] = Field(
         default_factory=list, description="Line numbers near chunk boundaries"
     )

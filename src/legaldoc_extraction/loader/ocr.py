@@ -39,8 +39,6 @@ class BatchResult:
 
 @dataclass(slots=True)
 class ChunkResult:
-    """Converted text and provider usage for one successful page range."""
-
     markdown: str
     input_tokens: int = 0
     output_tokens: int = 0
@@ -48,7 +46,7 @@ class ChunkResult:
 
 
 def page_ranges(state: LoaderState) -> list[tuple[int, int]]:
-    """Partition every PDF page exactly once without creating intermediate PDF files."""
+    """Zero-based, end-exclusive ranges covering every page once: 7 pages at chunk_size 3 → `[(0, 3), (3, 6), (6, 7)]`."""
     with pymupdf.open(str(state.artifacts.source_path)) as document:
         if not document.page_count:
             raise ValueError("PDF has no pages")
@@ -102,7 +100,7 @@ def convert_chunks(
 
 
 def merge_chunks(chunk_results: list[str]) -> tuple[str, list[int]]:
-    """Locate seams in the actual normalized Markdown, at the first line of each later chunk."""
+    r"""Return the joined Markdown and the 1-based line where each later chunk starts: `["a\nb", "c"]` → `("a\nb\n\nc", [4])`."""
     chunks = [clean_markdown(chunk) for chunk in chunk_results]
     if not chunks or any(not chunk.strip() for chunk in chunks):
         raise ValueError("Cannot merge empty OCR chunks")
@@ -171,7 +169,6 @@ def _convert_chunk(
 
 
 def _convert_once(state: LoaderState, page_range: tuple[int, int]) -> ChunkResult:
-    """Load one PDF chunk through the OCR model once."""
     image_bytes, raw_text = _read_pages(state.artifacts.source_path, page_range)
     llm = ChatDynamic(
         model=state.model,
@@ -179,6 +176,7 @@ def _convert_once(state: LoaderState, page_range: tuple[int, int]) -> ChunkResul
         temperature=0,
         reasoning_effort="medium",
         timeout=state.timeout_seconds,
+        # _convert_chunk owns retries.
         max_retries=0,
     )
     messages: list[BaseMessage] = [
@@ -201,7 +199,6 @@ def _convert_once(state: LoaderState, page_range: tuple[int, int]) -> ChunkResul
 
 
 def _read_pages(pdf_path: Path, page_range: tuple[int, int]) -> tuple[list[bytes], str]:
-    """Convert PDF pages to JPEG bytes in memory and extract raw text using PyMuPDF."""
     image_bytes: list[bytes] = []
     raw_text: list[str] = []
 
@@ -220,7 +217,7 @@ def _read_pages(pdf_path: Path, page_range: tuple[int, int]) -> tuple[list[bytes
 def _split_truncated_range(
     start: int, end: int, error: OutputTruncatedError
 ) -> list[tuple[int, int]]:
-    """Reduce a truncated chunk by one page; a single-page failure cannot be split further."""
+    """Retry with chunks one page smaller: `(0, 3)` → `[(0, 2), (2, 3)]`; a one-page range raises ValueError instead."""
     size = end - start - 1
     if size < 1:
         raise ValueError(

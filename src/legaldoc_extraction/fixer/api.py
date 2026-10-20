@@ -62,7 +62,6 @@ def edit_document(
         last_read = content
 
     async def run(fs: FSTools, path: str) -> DocumentEditResult:
-        """Own the SDK client through completion and retain only a completely inspected revision at the turn ceiling."""
         check_stop()
         tools = document_tools(fs, path, json_mode=json_mode, on_read=inspected)
         if extra_tools is not None:

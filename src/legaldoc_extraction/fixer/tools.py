@@ -64,6 +64,7 @@ def document_tools(
         updated = edit_hashline(before_text, parsed.edits)
         if json_mode:
             after = orjson.loads(updated)
+            # The fixer may be repairing invalid JSON, so only a parseable original pins the root type.
             try:
                 before = orjson.loads(before_text)
             except orjson.JSONDecodeError:

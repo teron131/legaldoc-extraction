@@ -23,7 +23,6 @@ class StructuredOutput(BaseModel):
 
 
 def _coerce_int(value: object) -> int:
-    """Convert loose provider metadata into an integer token count."""
     if value is None:
         return 0
     if isinstance(value, int):
@@ -37,7 +36,6 @@ def _coerce_int(value: object) -> int:
 
 
 def _coerce_float(value: object) -> float:
-    """Convert loose provider metadata into a float cost."""
     if value is None:
         return 0.0
     if isinstance(value, int | float):
@@ -51,7 +49,6 @@ def _coerce_float(value: object) -> float:
 
 
 def _parse_usage_metadata(usage_metadata: object) -> tuple[int, int, float] | None:
-    """Parse usage metadata from a message."""
     if not isinstance(usage_metadata, dict) or not usage_metadata:
         return None
     return (
@@ -62,7 +59,6 @@ def _parse_usage_metadata(usage_metadata: object) -> tuple[int, int, float] | No
 
 
 def _parse_token_usage(token_usage: object) -> tuple[int, int, float] | None:
-    """Parse OpenAI-style token usage metadata."""
     if not isinstance(token_usage, dict) or not token_usage:
         return None
     return (
@@ -75,7 +71,6 @@ def _parse_token_usage(token_usage: object) -> tuple[int, int, float] | None:
 def _parse_legacy_usage_metadata(
     usage_metadata: object,
 ) -> tuple[int, int, float] | None:
-    """Parse legacy Gemini usage metadata."""
     if not isinstance(usage_metadata, dict) or not usage_metadata:
         return None
     return (

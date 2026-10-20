@@ -29,7 +29,7 @@ def read_canonical_json_rows(path: str | Path) -> list[dict[str, Any]]:
 
 
 def canonical_json_to_export_rows(rows: list[dict[str, Any]]) -> list[dict[str, str]]:
-    """Convert canonical JSON rows into the flat export schema used by the API."""
+    """Missing fields become empty strings, and headers lose their Markdown marks: `"## 4. Equipment return"` → `"4. Equipment return"`."""
     return [
         {
             "Date": str(row.get("date", "")),
@@ -46,7 +46,6 @@ def canonical_json_to_export_rows(rows: list[dict[str, Any]]) -> list[dict[str, 
 
 
 def render_csv_bytes(rows: list[dict[str, str]]) -> bytes:
-    """Render export rows as UTF-8 CSV bytes with the export header."""
     buffer = StringIO()
     writer = csv.DictWriter(buffer, fieldnames=EXPORT_COLUMNS, extrasaction="ignore")
     writer.writeheader()
@@ -55,7 +54,7 @@ def render_csv_bytes(rows: list[dict[str, str]]) -> bytes:
 
 
 def render_excel_bytes(rows: list[dict[str, str]]) -> bytes:
-    """Render export rows as XLSX bytes after stripping control characters that Excel rejects."""
+    """Strips control characters that Excel rejects from cell text."""
     dataframe = pd.DataFrame(rows, columns=EXPORT_COLUMNS)
     for column_name in EXPORT_COLUMNS:
         dataframe[column_name] = dataframe[column_name].map(

@@ -6,26 +6,26 @@ from pathlib import Path
 
 
 class FSTools:
-    """Read and write text through a root-bound sandbox that rejects traversal and symlink escapes."""
+    """Read and write text through a root-bound sandbox that rejects traversal and symlink escapes.
+
+    A string is an agent path relative to the root, with any leading `/` ignored; a Path is a programmatic path that must resolve under the root.
+    """
 
     def __init__(self, root_dir: str | Path) -> None:
         self.root_dir = Path(root_dir).resolve()
 
     def read(self, path: str | Path) -> str:
-        """Read an existing UTF-8 text file from the sandbox."""
         file_path = self._resolve(path)
         if not file_path.is_file():
             raise FileNotFoundError(f"File not found: {path}")
         return file_path.read_text(encoding="utf-8")
 
     def write(self, path: str | Path, text: str) -> None:
-        """Write UTF-8 text in the sandbox, creating parent directories as needed."""
         file_path = self._resolve(path)
         file_path.parent.mkdir(parents=True, exist_ok=True)
         file_path.write_text(text, encoding="utf-8")
 
     def _resolve(self, path: str | Path) -> Path:
-        """Treat strings as sandbox-relative agent paths and Path objects as programmatic paths under the root."""
         if isinstance(path, Path):
             resolved = path.resolve()
             if not resolved.is_relative_to(self.root_dir):

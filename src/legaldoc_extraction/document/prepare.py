@@ -67,7 +67,7 @@ def prepare_document(
     timeout_seconds: float | None = None,
     max_attempts: int | None = None,
 ) -> tuple[DocumentEditResult, DocumentSections]:
-    """Prepare the final inspected document, preferring the agent map and falling back to unambiguous regex boundaries."""
+    """The agent's section map is used only if the document was not edited after reporting; otherwise regex anchors are tried, raising ValueError when they are missing or ambiguous."""
     reported: tuple[str, DocumentSections] | None = None
 
     def section_tools(fs: FSTools, path: str) -> list[FunctionTool]:

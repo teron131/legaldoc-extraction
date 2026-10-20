@@ -188,6 +188,7 @@ function renderHighlightedText(
   return parts.length === 0 ? text : parts;
 }
 
+/** Cuts `text` around its occurrenceIndex-th match and re-bases that index to the snippet, so renderHighlightedText marks the same occurrence. */
 function buildMatchSnippet(
   text: string,
   query: string,

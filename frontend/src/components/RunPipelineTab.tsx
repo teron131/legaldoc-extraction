@@ -38,7 +38,6 @@ interface RunPipelineTabProps {
   model: string;
 }
 
-/** Keeps lifecycle copy together while preserving partial-result and failure details. */
 function runNotice(run: RunSnapshot, isRunning: boolean) {
   if (run.status === "stopping")
     return {
@@ -76,7 +75,10 @@ function runNotice(run: RunSnapshot, isRunning: boolean) {
   };
 }
 
-/** Keeps complete messages available while extracting standard Python log metadata. */
+/**
+ * Parses FILE_LOG_FORMAT lines from logging_utils.py and rejoins messages that themselves contain " - ".
+ * `2026-05-01 09:30:12,345 - legaldoc_extraction.pipeline - INFO - run_batch_pipeline:325 - [MAIN] Loader - Input: 10` → `{ timestamp: "09:30:12", level: "INFO", message: "[MAIN] Loader - Input: 10" }`
+ */
 function parseLog(line: string) {
   const parts = line.split(" - ");
   const level = parts.find((part) => /^(INFO|WARNING|ERROR|DEBUG)$/.test(part)) ?? "INFO";
@@ -90,6 +92,7 @@ function parseLog(line: string) {
   return { timestamp, level, message };
 }
 
+/** Reads the last `[MAIN] Total - …` line that the batch pipeline and result retry log, so that log wording is a UI contract. */
 function tokenUsage(lines: string[]) {
   for (let index = lines.length - 1; index >= 0; index -= 1) {
     const match = lines[index].match(/Total - Input:\s*([\d,]+), Output:\s*([\d,]+)/);

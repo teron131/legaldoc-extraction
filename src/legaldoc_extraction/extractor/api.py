@@ -1,4 +1,4 @@
-"""Structured data extraction from prepared markdown documents using LangGraph."""
+"""Run the extractor graph per document, reusing canonical JSON that already carries current clause references."""
 
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextvars import copy_context
@@ -25,7 +25,6 @@ def _process_single_file(
     max_fixer_turns: int,
     graph: CompiledStateGraph,
 ) -> dict[str, Any]:
-    """Process a single markdown file through the extraction graph."""
     graph_input = ExtractorInput(
         artifacts=artifacts,
         model=model,
@@ -71,16 +70,9 @@ def extract_clauses(
     max_fixer_turns: int | None = None,
     max_concurrency: int | None = None,
 ) -> dict[str, Any] | list[dict[str, Any]]:
-    """Extract structured data from prepared Markdown documents.
+    """Documents that pass has_cached_output are skipped and yield `{"_skipped": True}` with zero usage.
 
-    Args:
-        artifacts: Document artifact set(s) to extract from.
-        model: Model for extraction and fixer steps (defaults to settings.llm).
-        max_fixer_turns: Maximum turns for the canonical JSON editing agent.
-        max_concurrency: Maximum number of concurrent requests.
-
-    Returns:
-        Extracted data dict for single file or list of dicts for batch processing.
+    Omitted options fall back to `settings`; a list input returns results in input order, and worker errors propagate.
     """
     model = model or settings.llm
     max_fixer_turns = max_fixer_turns or settings.max_fixer_turns
@@ -92,7 +84,6 @@ def extract_clauses(
     graph = create_extractor_graph()
 
     def process_file(document_artifacts: DocumentArtifacts) -> dict[str, Any]:
-        """Process one file through the workflow."""
         check_stop()
         if not has_cached_output(document_artifacts):
             return _process_single_file(

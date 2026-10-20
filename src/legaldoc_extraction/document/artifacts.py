@@ -1,4 +1,4 @@
-"""Document-scoped artifact paths for pipeline stages."""
+"""Own one document's on-disk layout: `<cache>/<document_id>/{source,loader,extractor}/` plus flat exports in the export root."""
 
 from __future__ import annotations
 
@@ -14,13 +14,13 @@ SNAPSHOT_DIR = "snapshots"
 
 
 def _slugify(value: str) -> str:
-    """Convert text into a filesystem-friendly slug."""
+    """`"Loan Form (v2)"` → `"loan-form-v2"`; text with no letters or digits becomes `"document"`."""
     normalized = _NON_ALNUM_RE.sub("-", value.lower()).strip("-")
     return normalized or "document"
 
 
 def _build_document_id(source_path: Path) -> str:
-    """Build a stable document ID from the source filename and file hash."""
+    """Changed contents yield a new id, so a replaced PDF never reuses the previous version's cache: `Loan Form.pdf` → `loan-form-` plus the first 12 hex digits of its SHA-256."""
     digest = hashlib.sha256()
     with source_path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
@@ -29,7 +29,6 @@ def _build_document_id(source_path: Path) -> str:
 
 
 def _resolve_cached_source_path(cache_dir: Path, fallback_path: Path) -> Path:
-    """Find the cached source file for a document or fall back to the given path."""
     source_dir = cache_dir / "source"
     if not source_dir.is_dir():
         return fallback_path
@@ -44,7 +43,6 @@ def _resolve_cached_source_path(cache_dir: Path, fallback_path: Path) -> Path:
 
 
 def _resolve_override_path(path: str | Path | None) -> Path | None:
-    """Resolve an override path."""
     if path is None:
         return None
     return Path(path).resolve()
@@ -52,7 +50,7 @@ def _resolve_override_path(path: str | Path | None) -> Path | None:
 
 @dataclass(frozen=True, slots=True)
 class DocumentArtifacts:
-    """Store resolved pipeline artifact paths for one source document."""
+    """from_paths and from_source hash the source file, so it must exist; from_cache_path rebuilds from a cached artifact without reading the source."""
 
     source_path: Path
     document_id: str
@@ -71,7 +69,6 @@ class DocumentArtifacts:
         cache_root: Path = DOCUMENTS_CACHE_DIR,
         export_root: Path = DATA_OUTPUT_DIR,
     ) -> DocumentArtifacts:
-        """Build artifacts from a source path and optional output overrides."""
         resolved_source = Path(source_path).resolve()
         return cls(
             source_path=resolved_source,
@@ -90,7 +87,6 @@ class DocumentArtifacts:
         cache_root: Path = DOCUMENTS_CACHE_DIR,
         export_root: Path = DATA_OUTPUT_DIR,
     ) -> DocumentArtifacts:
-        """Build artifacts that use the default cache-derived output locations."""
         return cls.from_paths(
             source_path,
             cache_root=cache_root,
@@ -105,7 +101,7 @@ class DocumentArtifacts:
         cache_root: Path = DOCUMENTS_CACHE_DIR,
         export_root: Path = DATA_OUTPUT_DIR,
     ) -> DocumentArtifacts:
-        """Reconstruct artifacts from a cached markdown or JSON artifact path."""
+        """The given Markdown or JSON path becomes the matching override."""
         resolved_path = Path(artifact_path).resolve()
         resolved_cache_root = Path(cache_root).resolve()
         relative_path = resolved_path.relative_to(resolved_cache_root)
@@ -127,53 +123,44 @@ class DocumentArtifacts:
 
     @property
     def filename(self) -> str:
-        """Return the original source filename."""
         return self.source_path.name
 
     @property
     def stem(self) -> str:
-        """Return the original source filename without its suffix."""
         return self.source_path.stem
 
     @property
     def cache_dir(self) -> Path:
-        """Return the document-specific cache directory."""
         return self.cache_root / self.document_id
 
     @property
     def source_dir(self) -> Path:
-        """Return the cache directory that stores the source file copy."""
         return self.cache_dir / "source"
 
     @property
     def loader_dir(self) -> Path:
-        """Return the directory used for loader outputs."""
         if self.markdown_override is not None:
             return self.markdown_override.parent
         return self.cache_dir / "loader"
 
     @property
     def extractor_dir(self) -> Path:
-        """Return the directory used for extractor outputs."""
         if self.json_override is not None:
             return self.json_override.parent
         return self.cache_dir / "extractor"
 
     @property
     def cached_source_path(self) -> Path:
-        """Return the canonical cached source-file path."""
         return self.source_dir / self.filename
 
     @property
     def markdown_path(self) -> Path:
-        """Return the resolved markdown output path."""
         if self.markdown_override is not None:
             return self.markdown_override
         return self.loader_dir / f"{self.stem}.md"
 
     @property
     def json_path(self) -> Path:
-        """Return the resolved JSON output path."""
         if self.json_override is not None:
             return self.json_override
         return self.extractor_dir / f"{self.stem}.json"
@@ -185,21 +172,17 @@ class DocumentArtifacts:
 
     @property
     def export_json_path(self) -> Path:
-        """Return the exported JSON path."""
         return self.export_root / f"{self.stem}.json"
 
     @property
     def export_xlsx_path(self) -> Path:
-        """Return the exported XLSX path."""
         return self.export_root / f"{self.stem}.xlsx"
 
     @property
     def export_csv_path(self) -> Path:
-        """Return the exported CSV path."""
         return self.export_root / f"{self.stem}.csv"
 
     def ensure_dirs(self) -> None:
-        """Create all directories needed for this document's artifacts."""
         for path in (
             self.source_dir,
             self.loader_dir,

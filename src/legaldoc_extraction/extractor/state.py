@@ -8,8 +8,6 @@ from .schemas import ClauseList, DocumentOverview, MitigationList
 
 
 class ExtractorInput(BaseModel):
-    """Input for document data extraction workflow."""
-
     artifacts: DocumentArtifacts = Field(
         description="Extractor file paths for this document."
     )
@@ -24,8 +22,6 @@ class ExtractorInput(BaseModel):
 
 
 class ExtractorOutput(BaseModel):
-    """Output for document data extraction workflow."""
-
     overview_output: DocumentOverview | None = Field(
         default=None, description="Overview extraction result."
     )
@@ -45,15 +41,10 @@ class ExtractorOutput(BaseModel):
 class ExtractorState(ExtractorInput, ExtractorOutput):
     """Flat graph state combining run inputs, intermediate extraction records, and output usage."""
 
-    # --- Overview Extraction Section ---
     overview_input: str | None = Field(
         default=None, description="Overview markdown slice."
     )
-
-    # --- Mitigation Extraction Section ---
     mitigation_input: str | None = Field(
         default=None, description="Mitigation markdown slice."
     )
-
-    # --- Clause Extraction Section ---
     clause_input: str | None = Field(default=None, description="Clause markdown slice.")

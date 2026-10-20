@@ -1,4 +1,4 @@
-"""Public API for loading PDFs into markdown through the loader graph."""
+"""Run the loader graph over one or more PDFs, reusing Markdown already at the output path."""
 
 from concurrent.futures import Executor, ThreadPoolExecutor
 from contextlib import nullcontext
@@ -24,19 +24,15 @@ def load_pdf(
     *,
     request_executor: Executor | None = None,
 ) -> tuple[str | None, dict] | list[tuple[str | None, dict]]:
-    """Load PDF(s) and convert to markdown.
+    """Return `(markdown, usage)` per file, where usage holds total_input_tokens, total_output_tokens, and total_cost.
+
+    Markdown already at the output path is reused with zero usage, and a non-PDF file yields `(None, zero usage)`.
+    Without output_dir, Markdown and its section map are written beside each PDF.
+    A single PDF path returns one tuple and a list returns a list; omitted options fall back to `settings`.
 
     Args:
-        source_path: Path(s) to input PDF file(s) or directory.
-        output_dir: Optional directory path to write markdown file(s).
-        model: LLM model identifier for PDF conversion (defaults to settings.llm).
-        pages_per_chunk: Number of pages per chunk for chunked processing.
-        max_concurrency: Maximum number of concurrent requests to the LLM.
-        request_executor: Shared loader request pool for a multi-document pipeline; otherwise this call owns a pool.
-
-    Returns:
-        Tuple of (markdown, metadata_dict) for single file, or list of tuples for batch processing.
-        Metadata dict contains: total_input_tokens, total_output_tokens, total_cost.
+        pages_per_chunk: Pages per OCR request; a chunk whose output is truncated is retried one page smaller.
+        request_executor: Pool shared across a multi-document pipeline so OCR and cleanup requests share one limit; without it, this call owns a pool of max_concurrency workers.
     """
     config = settings.model_copy(deep=True)
     model = model or config.llm

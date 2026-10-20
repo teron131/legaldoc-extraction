@@ -1,4 +1,4 @@
-"""Guide visual PDF transcription without introducing document-domain assumptions."""
+"""OCR transcription prompt: page images are the layout authority, and the PDF text layer checks exact wording."""
 
 LOADER_PROMPT = """Convert the supplied document pages to GitHub-Flavored Markdown. Output only the converted content without explanations or code fences.
 

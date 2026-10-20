@@ -16,17 +16,7 @@ SUPPORTED_IMAGE_MIME_TYPES = {
 
 
 class MediaMessage(HumanMessage):
-    """Build a HumanMessage from JPEG or PNG bytes in Chat Completions format.
-
-    Args:
-        images: Image bytes or a list of image bytes.
-        description: Text appended after the images.
-        label_pages: Add a numbered page label before each image.
-        mime_type: Image MIME type, either image/jpeg or image/png.
-
-    Example:
-        >>> message = MediaMessage(b"image", description="Describe this page")
-    """
+    """Image blocks come first, each preceded by a `Page N:` label when label_pages is set, then `description` as trailing text; only JPEG and PNG are accepted."""
 
     def __init__(
         self,
@@ -35,7 +25,6 @@ class MediaMessage(HumanMessage):
         label_pages: bool = False,
         mime_type: str = DEFAULT_IMAGE_MIME_TYPE,
     ):
-        """Build ordered image blocks with optional page labels and trailing text, rejecting unsupported MIME types."""
         if mime_type not in SUPPORTED_IMAGE_MIME_TYPES:
             supported = ", ".join(sorted(SUPPORTED_IMAGE_MIME_TYPES))
             raise ValueError(

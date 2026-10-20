@@ -1,4 +1,4 @@
-/** Coordinates pipeline requests, configuration, and output views. */
+/** Owns workspace state, including autosaved settings, the backend run and its log stream, uploads, and results, and hands each tab its slice. */
 
 import { CircleAlert, FileText, LoaderCircle, X } from "lucide-preact";
 import { useEffect, useRef, useState } from "preact/hooks";
@@ -69,6 +69,7 @@ function createDefaultEnv(
   };
 }
 
+/** Autosave payload; the Custom connection is saved only through saveConnection. */
 function normalizeEnvPayload(env: EnvFormState): EnvUpdateRequest {
   return {
     platform: env.platform,

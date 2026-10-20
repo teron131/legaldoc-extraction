@@ -1,4 +1,4 @@
-/** Connects the UI to backend endpoints and the live log stream. */
+/** Connects the UI to backend endpoints and the live log stream; a dev server without VITE_BACKEND_URL swaps in in-memory mocks (MOCK_API_ENABLED). */
 
 import createClient from "openapi-fetch";
 
@@ -329,6 +329,7 @@ export function subscribeToLogs({
       const streamUrl = new URL(resolveApiPath("/logs/stream"), window.location.origin);
       streamUrl.searchParams.set("after", String(cursor));
       streamUrl.searchParams.set("run_id", runId);
+      // EventSource cannot send headers, so the token travels as a query parameter.
       if (accessTokenProvider) {
         const token = await accessTokenProvider();
         if (token) {

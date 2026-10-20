@@ -25,7 +25,7 @@ router = APIRouter()
 
 @router.get("/env", response_model_exclude_none=True)
 def get_env() -> EnvResponse:
-    """Get current environment configuration."""
+    """Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset values are omitted."""
     env_values = get_ui_config_env_values()
     return EnvResponse(
         platform=_coerce_literal_value(
@@ -41,7 +41,7 @@ def get_env() -> EnvResponse:
 
 @router.post("/env")
 def set_env(payload: EnvUpdateRequest) -> StatusResponse:
-    """Persist settings and write-only Custom credentials; an omitted or blank key preserves the saved credential."""
+    """Persist settings and write-only Custom credentials for the next run; an omitted or blank key preserves the saved credential."""
     updates = build_ui_settings_env_updates(payload.model_dump(exclude_unset=True))
     if payload.llm_api_key is not None:
         api_key = payload.llm_api_key.get_secret_value().strip()
@@ -59,14 +59,13 @@ def set_env(payload: EnvUpdateRequest) -> StatusResponse:
 
 @router.get("/platforms")
 def get_platforms() -> PlatformDefaultsResponse:
-    """Get platform configurations for UI."""
+    """Return each platform's default chat and embedding model."""
     return PlatformDefaultsResponse.model_validate(get_platform_defaults())
 
 
 def _coerce_literal_value[T: str](
     value: str | None, allowed_values: tuple[T, ...]
 ) -> T | None:
-    """Return a literal-backed value when it matches an allowed transport value."""
     normalized_value = normalize_env_value(value)
     if normalized_value in allowed_values:
         return cast(T, normalized_value)
@@ -74,7 +73,6 @@ def _coerce_literal_value[T: str](
 
 
 def _coerce_optional_int(value: str | None) -> int | None:
-    """Convert an env-file value to an int when possible."""
     normalized_value = normalize_env_value(value)
     if normalized_value is None:
         return None

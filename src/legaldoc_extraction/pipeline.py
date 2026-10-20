@@ -37,7 +37,7 @@ PIPELINE_STAGES = (LOADING_STAGE, EXTRACTING_STAGE)
 
 @dataclass(frozen=True, slots=True)
 class BatchResult:
-    """Report document outcomes without treating handled per-file failures as a successful batch."""
+    """Document counts for one run: `failed` includes failures handled and logged per document, and `skipped` counts documents that already had results."""
 
     succeeded: int = 0
     failed: int = 0
@@ -55,14 +55,12 @@ class StageProgress:
     lock: threading.Lock = field(default_factory=threading.Lock, repr=False)
 
     def advance(self, stage: str) -> str:
-        """Atomically increment a stage count and return its progress label."""
         with self.lock:
             self.completed[stage] += 1
             return f"{stage} {self.completed[stage]}/{self.total_files}"
 
 
 def _resolve_input_files(config: Settings) -> list[Path] | None:
-    """Resolve input files for the batch run."""
     if config.target_pdf:
         target_path = DATA_INPUT_DIR / config.target_pdf
         if not target_path.exists():
@@ -81,7 +79,6 @@ def _resolve_input_files(config: Settings) -> list[Path] | None:
 
 
 def _needs_processing(source_file: Path) -> bool:
-    """Check whether the source file still needs processing."""
     artifacts = DocumentArtifacts.from_source(source_file)
     return not artifacts.markdown_path.exists() or not has_cached_output(artifacts)
 
@@ -91,7 +88,6 @@ def _start_heartbeat() -> threading.Event:
     stop_heartbeat = threading.Event()
 
     def _heartbeat() -> None:
-        """Emit periodic heartbeat logs."""
         while not stop_heartbeat.wait(HEARTBEAT_INTERVAL_SECONDS):
             logger.info(HEARTBEAT_MESSAGE)
 
@@ -100,7 +96,6 @@ def _start_heartbeat() -> threading.Event:
 
 
 def _log_settings(config: Settings, file_count: int) -> None:
-    """Log the current settings."""
     logger.info("[MAIN] Processing %s file(s)", file_count)
     logger.info("[MAIN] Fixer turns: %s", config.max_fixer_turns)
     logger.info(
@@ -117,7 +112,6 @@ def _load_markdown(
     progress: StageProgress,
     loader_executor: Executor | None = None,
 ) -> tuple[Path | None, UsageMetadata]:
-    """Cache the source PDF and run loading, returning usage and the Markdown path if it exists."""
     artifacts.ensure_dirs()
     shutil.copy2(source_file, artifacts.cached_source_path)
     load_result = load_pdf(
@@ -153,7 +147,6 @@ def _extract_markdown(
     artifacts: DocumentArtifacts,
     progress: StageProgress,
 ) -> UsageMetadata | None:
-    """Extract cached Markdown and return usage, or None when no usable result is produced."""
     result = extract_clauses(
         artifacts,
         model=config.llm,
@@ -178,7 +171,6 @@ def _build_process_result(
     load_usage: UsageMetadata,
     extract_usage: UsageMetadata,
 ) -> dict[str, dict]:
-    """Build the per-file process result."""
     return {
         "loader": load_usage.to_dict(),
         "extractor": extract_usage.to_dict(),
@@ -207,9 +199,9 @@ def process_single_file(
     progress: StageProgress | None = None,
     loader_executor: Executor | None = None,
 ) -> tuple[bool, dict[str, dict]]:
-    """Load and extract one PDF, returning success and per-stage usage.
+    """Stage failures are logged and return False with usage from the stages that completed.
 
-    Stage failures return False with completed usage; a missing final JSON after successful extraction raises FileNotFoundError.
+    RunStopped propagates, and a missing canonical JSON after a successful extraction raises FileNotFoundError.
     """
     check_stop()
     if progress is None:
@@ -257,7 +249,10 @@ def _process_pending_files(
     pending_files: list[Path],
     config: Settings,
 ) -> list[tuple[bool, dict[str, dict]]]:
-    """Process documents concurrently with a shared loader pool and stop the heartbeat on exit."""
+    """Documents share one loader pool so OCR and cleanup requests stay within max_concurrency across the batch.
+
+    Each worker runs in a copied context so the run's stop signal reaches it.
+    """
     _log_settings(config, len(pending_files))
     stop_heartbeat = _start_heartbeat()
     progress = StageProgress(total_files=len(pending_files))
@@ -294,7 +289,7 @@ def _process_pending_files(
 
 
 def run_batch_pipeline() -> BatchResult:
-    """Process pending PDFs and return aggregate outcomes, including failures already handled within individual documents."""
+    """Reads the module-level settings; documents with current outputs are skipped, and per-document failures are counted rather than raised."""
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     DATA_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -75,7 +75,7 @@ class HashlineEditResponse(BaseModel):
 
 
 def format_hashline_text(text: str) -> str:
-    """Render copyable references using the same physical lines as the editor."""
+    r"""Prefix each physical line with the reference the editor accepts: `"Date: 1 May 2026\n4.2 Return\n"` → `"1#46edb0:Date: 1 May 2026\n2#d10b07:4.2 Return"`."""
     lines, _ = _split_text_lines(text)
     return "\n".join(
         f"{format_hashline_ref(index, line)}:{line}"
@@ -195,6 +195,7 @@ def _validate_targets(edits: list[tuple[int, int, list[str]]]) -> None:
 
 
 def _strip_prefixes(lines: list[str], valid_refs: set[str]) -> list[str]:
+    """Models sometimes paste read prefixes into replacement lines; only this edit's own references are stripped, so content that merely looks like one survives."""
     result = []
     for line in lines:
         match = _LINE_RE.match(line)

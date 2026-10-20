@@ -15,8 +15,6 @@ T = TypeVar("T")
 
 @dataclass(frozen=True, slots=True)
 class ResolvedSources:
-    """Resolved input files and output-directory context for one pipeline call."""
-
     files: list[Path]
     is_single: bool
     output_dir: Path | None
@@ -34,7 +32,7 @@ class ResolvedSources:
 
 
 def resolve_path(path: str | Path) -> Path:
-    """Anchor relative paths under the project root and leave absolute paths unchanged."""
+    """Relative paths resolve against the project root, not the working directory."""
     candidate_path = Path(path)
     return (
         candidate_path
@@ -47,7 +45,7 @@ def resolve_source_files(
     source_path: str | Path | list[str | Path],
     extensions: list[str] | None = None,
 ) -> list[Path]:
-    """Resolve a file or sorted directory matches; explicit lists retain existing paths in input order."""
+    """A file yields itself and a directory its sorted matches, raising FileNotFoundError when the path is neither; list entries keep their order and missing ones are dropped."""
     if isinstance(source_path, list):
         return [Path(path) for path in source_path if Path(path).exists()]
 
@@ -74,7 +72,7 @@ def resolve_pipeline_sources(
     extensions: list[str],
     output_dir: str | Path | None = None,
 ) -> ResolvedSources:
-    """Resolve source files and create the requested output directory for a pipeline entrypoint."""
+    """Also creates output_dir when one is given."""
     files = resolve_source_files(source_path, extensions=extensions)
     resolved_output_dir = None
     if output_dir:
@@ -88,12 +86,10 @@ def resolve_pipeline_sources(
 
 
 def read_json_file(path: str | Path) -> Any:
-    """Read and parse a JSON file."""
     return orjson.loads(Path(path).read_bytes())
 
 
 def write_json(data: Any, path: str | Path) -> None:
-    """Write UTF-8 JSON with two-space indentation and a trailing newline, creating parent directories as needed."""
     output_path = Path(path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_bytes(orjson.dumps(data, option=orjson.OPT_INDENT_2) + b"\n")

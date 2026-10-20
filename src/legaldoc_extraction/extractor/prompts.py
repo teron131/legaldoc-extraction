@@ -58,7 +58,6 @@ Mitigation headers:
 def build_clause_prompt(
     *, mitigation_headers: list[str], source_documents: list[str]
 ) -> str:
-    """Bind stage outputs as selection hints while source text remains the authority."""
     return CLAUSE_PROMPT.format(
         mitigation_headers_str="\n".join(mitigation_headers),
         source_documents_list=", ".join(source_documents),
@@ -73,7 +72,6 @@ Do not infer or reconstruct anything that would require going back to the source
 
 
 def build_output_fixer_prompt(context: str) -> str:
-    """Build the output fixer prompt."""
     prompt = """Edit the canonical document output JSON to satisfy the task.
 
 Hard constraints:

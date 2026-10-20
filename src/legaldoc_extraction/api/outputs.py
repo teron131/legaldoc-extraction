@@ -55,7 +55,7 @@ def list_outputs() -> OutputsResponse:
 
 @router.delete("/outputs")
 def delete_output(id: str = Query(..., min_length=1)) -> StatusResponse:
-    """Delete a cached output."""
+    """Delete one output's canonical result, rollback snapshot, and exports, keeping its source copy and Markdown; `id` comes from /outputs."""
     path = _resolve_output_file(id)
     _artifacts(path).delete_outputs()
     return StatusResponse(status="ok")
@@ -67,7 +67,7 @@ def delete_output(id: str = Query(..., min_length=1)) -> StatusResponse:
     responses={409: {"model": StatusResponse}},
 )
 def retry_output(id: str = Query(..., min_length=1)) -> StatusResponse | JSONResponse:
-    """Retry a cached output."""
+    """Delete one output's result and re-extract it in the background from the retained Markdown; responds 409 `busy` while a run is active."""
     if not runner.start(_retry_output_result, id):
         return JSONResponse(StatusResponse(status="busy").model_dump(), status_code=409)
     return StatusResponse(status="started")
@@ -75,7 +75,7 @@ def retry_output(id: str = Query(..., min_length=1)) -> StatusResponse | JSONRes
 
 @router.get("/outputs/search")
 def search_output_rows(q: str = Query(..., min_length=1)) -> OutputSearchResponse:
-    """Search cached output metadata and clause rows case-insensitively across all documents."""
+    """Search cached output metadata and clause rows case-insensitively across all documents, returning one match per occurrence."""
     query = q.strip()
     if not query:
         return OutputSearchResponse(matches=[])
@@ -96,6 +96,7 @@ def search_output_rows(q: str = Query(..., min_length=1)) -> OutputSearchRespons
                 row_index=None,
                 snippet=field_value,
             )
+            # One metadata field per file: the filename also appears inside the relative path.
             break
 
         for index, row in enumerate(_read_output_rows(path)):
@@ -117,7 +118,7 @@ def search_output_rows(q: str = Query(..., min_length=1)) -> OutputSearchRespons
 
 @router.get("/outputs/preview")
 def preview_output(id: str = Query(..., min_length=1)) -> OutputPreviewResponse:
-    """Preview a cached output."""
+    """Return every canonical row of one output; `id` comes from /outputs."""
     path = _resolve_output_file(id)
     rows = _read_output_rows(path)
     return OutputPreviewResponse(
@@ -133,7 +134,7 @@ def download_output(
     id: list[str] = Query(..., min_length=1),
     format: str = Query(default="json", pattern="^(json|csv|xlsx)$"),
 ) -> StreamingResponse:
-    """Download a cached output."""
+    """Download one output in `format`, or a ZIP when several `id`s are given; CSV and XLSX are rendered on request from the canonical JSON."""
     paths = [_resolve_output_file(output_id) for output_id in id]
     if len(paths) == 1:
         return _build_single_download_response(paths[0], format)
@@ -141,7 +142,6 @@ def download_output(
 
 
 def _iter_cached_output_files() -> Iterator[Path]:
-    """Iterate over cached output files."""
     if not DOCUMENTS_CACHE_DIR.exists():
         return iter(())
     return iter(
@@ -154,7 +154,7 @@ def _iter_cached_output_files() -> Iterator[Path]:
 
 
 def _resolve_output_file(output_id: str) -> Path:
-    """Resolve the requested output file."""
+    """Output ids are absolute paths that must lie inside the documents cache; others get 400, and missing or non-JSON files get 404."""
     candidate = Path(output_id).resolve()
     cache_root = DOCUMENTS_CACHE_DIR.resolve()
     try:
@@ -169,7 +169,6 @@ def _resolve_output_file(output_id: str) -> Path:
 
 
 def _build_output_file_summary(path: Path) -> OutputFileSummary:
-    """Build the transport payload for one output file."""
     row_count = len(_read_output_rows(path))
     artifacts = _artifacts(path)
     stat = path.stat()
@@ -191,7 +190,6 @@ def _build_output_file_summary(path: Path) -> OutputFileSummary:
 
 
 def _read_output_rows(path: Path) -> list[dict[str, Any]]:
-    """Read output rows from disk."""
     try:
         return read_canonical_json_rows(path)
     except ValueError as exc:
@@ -202,14 +200,12 @@ def _read_output_rows(path: Path) -> list[dict[str, Any]]:
 
 
 def _relative_output_path(path: Path) -> str:
-    """Return the output path relative to the cache root."""
     return path.resolve().relative_to(DOCUMENTS_CACHE_DIR.resolve()).as_posix()
 
 
 def _searchable_output_fields(
     path: Path, artifacts: DocumentArtifacts
 ) -> tuple[tuple[str, str], ...]:
-    """Return searchable fields for an output file."""
     return (
         ("filename", path.name),
         ("source_name", artifacts.source_path.name),
@@ -218,7 +214,6 @@ def _searchable_output_fields(
 
 
 def _searchable_row_fields(row: dict[str, Any]) -> tuple[tuple[str, str], ...]:
-    """Return searchable fields for an output row."""
     return (
         ("date", str(row.get("date", ""))),
         ("source_document", str(row.get("source_document", ""))),
@@ -229,7 +224,6 @@ def _searchable_row_fields(row: dict[str, Any]) -> tuple[tuple[str, str], ...]:
 
 
 def _build_snippet(text: str, query: str, context_chars: int = 80) -> str:
-    """Build a text snippet around a query."""
     normalized_text = text.strip()
     if not normalized_text:
         return ""
@@ -256,7 +250,6 @@ def _append_output_matches(
     row_index: int | None,
     snippet: str,
 ) -> None:
-    """Append search matches for one field."""
     for occurrence_index in range(field_value.lower().count(query.lower())):
         matches.append(
             OutputSearchMatch(
@@ -271,7 +264,6 @@ def _append_output_matches(
 
 
 def _build_export_bytes(path: Path, file_format: str) -> bytes:
-    """Render output bytes for the requested format."""
     if file_format == "json":
         return path.read_bytes()
 
@@ -285,7 +277,6 @@ def _build_single_download_response(
     path: Path,
     file_format: str,
 ) -> StreamingResponse:
-    """Build a single-file download response."""
     headers = {
         "Content-Disposition": f'attachment; filename="{path.stem}.{file_format}"'
     }
@@ -305,7 +296,7 @@ def _build_zip_download_response(
     paths: list[Path],
     file_format: str,
 ) -> StreamingResponse:
-    """Build a zip download response."""
+    """Duplicate names get ` (n)` suffixes that never collide with another output's own name."""
     archive_buffer = BytesIO()
     used_names: set[str] = set()
     reserved_names = {f"{path.stem}.{file_format}".casefold() for path in paths}
@@ -355,7 +346,6 @@ def _retry_output_result(output_id: str) -> BatchResult:
 
 
 def _artifacts(path: Path) -> DocumentArtifacts:
-    """Reconstruct one output's artifact set under the same roots used for listing and validation."""
     return DocumentArtifacts.from_cache_path(
         path, cache_root=DOCUMENTS_CACHE_DIR, export_root=DATA_OUTPUT_DIR
     )

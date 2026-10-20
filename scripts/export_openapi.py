@@ -13,7 +13,6 @@ OPENAPI_PATH = PROJECT_ROOT / "openapi.json"
 
 
 def main() -> None:
-    """Write the current OpenAPI schema to disk."""
     schema = app.openapi()
     OPENAPI_PATH.write_text(
         f"{orjson.dumps(schema, option=orjson.OPT_INDENT_2).decode('utf-8')}\n",

@@ -30,7 +30,7 @@ def uploaded_files() -> UploadsResponse:
 
 @router.post("/upload")
 async def upload(files: list[UploadFile] = File(...)) -> UploadResponse:
-    """Upload PDF files."""
+    """Store uploaded PDFs in the input directory, replacing same-named files and skipping non-PDF names; responds 409 while a run is active and 413 for a file over 50 MB, keeping files saved earlier in the request."""
     _require_idle_runner()
     DATA_INPUT_DIR.mkdir(parents=True, exist_ok=True)
     saved = 0
@@ -65,6 +65,7 @@ async def _save_uploaded_pdf(file: UploadFile, destination: Path) -> None:
                         ),
                     )
                 handle.write(chunk)
+        # A run may have started while this file streamed.
         _require_idle_runner()
         pending.replace(destination)
     finally:

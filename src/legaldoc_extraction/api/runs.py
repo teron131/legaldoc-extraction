@@ -15,7 +15,7 @@ router = APIRouter()
     "/run", response_model=StatusResponse, responses={409: {"model": StatusResponse}}
 )
 def run(payload: RunRequest) -> StatusResponse | JSONResponse:
-    """Start a pipeline run."""
+    """Start a background run over every uploaded PDF without current results, using saved settings plus this request's unpersisted overrides; responds 409 `busy` while a run is active."""
     if not runner.start(_run_pipeline_from_request, payload):
         return JSONResponse(StatusResponse(status="busy").model_dump(), status_code=409)
     return StatusResponse(status="started")
@@ -23,7 +23,7 @@ def run(payload: RunRequest) -> StatusResponse | JSONResponse:
 
 @router.post("/run/{run_id}/stop")
 def stop(run_id: str) -> RunSnapshot:
-    """Request cancellation of this generation while its workers finish exiting."""
+    """Request cancellation of this generation while its workers finish exiting; responds 409 when `run_id` is no longer current."""
     state = runner.stop(run_id)
     if state is None:
         raise HTTPException(status_code=409, detail="This run is no longer current")
@@ -32,7 +32,7 @@ def stop(run_id: str) -> RunSnapshot:
 
 @router.get("/logs")
 def logs() -> LogsResponse:
-    """Get recent log lines and running status."""
+    """Return recent log lines and the current run; pass `cursor` as `after` to /logs/stream to continue without gaps or repeats."""
     lines, cursor, state = runner.snapshot()
     return LogsResponse(
         lines=lines,
@@ -48,7 +48,7 @@ def logs_stream(
     run_id: str | None = None,
     last_event_id: str | None = Header(default=None),
 ) -> StreamingResponse:
-    """Resume after the last acknowledged SSE record, falling back to the initial snapshot cursor."""
+    """Stream log records as SSE from byte offset `after` (the /logs cursor), resuming from `Last-Event-ID` on reconnect; emits `reset` when `run_id` is no longer current and `done` with the final run state."""
     if last_event_id:
         generation, separator, position = last_event_id.rpartition(":")
         if separator and position.isdecimal():
@@ -61,8 +61,7 @@ def logs_stream(
 
 
 def _run_pipeline_from_request(payload: RunRequest) -> BatchResult:
-    """Run the pipeline in a background thread."""
-
+    """Request values apply to this run only; nothing is persisted."""
     settings.reload_from_env(
         **build_settings_env_updates(payload.model_dump(exclude_unset=True))
     )

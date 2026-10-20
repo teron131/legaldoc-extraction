@@ -16,14 +16,10 @@ StatusValue = Literal["ok", "started", "busy"]
 
 
 class ApiSchema(BaseModel):
-    """Base class for API request and response schemas."""
-
     model_config = ConfigDict(extra="forbid")
 
 
 class EnvRequestBase(ApiSchema):
-    """Shared request fields for environment-related endpoints."""
-
     platform: PlatformName | SkipJsonSchema[None] = None
 
 
@@ -36,7 +32,7 @@ class RunRequest(EnvRequestBase):
 
 
 class EnvUpdateRequest(EnvRequestBase):
-    """Request payload for updating persisted UI environment values."""
+    """Settings to persist; omitted fields keep their saved values."""
 
     llm: str | SkipJsonSchema[None] = None
     embedding_model: str | SkipJsonSchema[None] = None
@@ -63,7 +59,7 @@ class StatusResponse(ApiSchema):
 
 
 class UploadResponse(ApiSchema):
-    """Upload result summary."""
+    """Number of PDFs stored; files without a .pdf name are skipped."""
 
     saved: int
 

@@ -40,7 +40,7 @@ def load_node(state: LoaderState, config: RunnableConfig) -> dict[str, object]:
 
 
 def fix_document_node(state: LoaderState, config: RunnableConfig) -> dict[str, object]:
-    """Use the shared loader pool for one autonomous cleanup and section-reporting session."""
+    """Runs preparation on the shared loader pool so cleanup sessions count against the same request limit as OCR chunks."""
     if not state.merged_result:
         raise ValueError("No OCR Markdown to prepare")
     result, sections = (
@@ -70,7 +70,6 @@ def fix_document_node(state: LoaderState, config: RunnableConfig) -> dict[str, o
 
 @functools.lru_cache(maxsize=1)
 def create_loader_graph() -> CompiledStateGraph:
-    """Build the PDF-to-Markdown workflow with whole-document cleanup and section mapping."""
     graph = StateGraph(
         LoaderState, input_schema=LoaderInput, output_schema=LoaderOutput
     )

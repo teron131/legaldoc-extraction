@@ -20,7 +20,7 @@ class DocumentOverview(BaseModel):
     @field_validator("date")
     @classmethod
     def clean_date(cls, v: str) -> str:
-        """Format ISO dates as day, month, and year; retain other date text after trimming whitespace."""
+        """`"2026-03-01"` → `"1st March 2026"`; non-ISO text is only trimmed."""
         try:
             dt = date.fromisoformat(v)
             day_suffix = (
@@ -71,8 +71,6 @@ class ClausePointer(BaseModel):
 
 
 class Clause(ClausePointer):
-    """A single clause extracted from source documents."""
-
     clause_content: str = Field(
         description="Complete operative clause text under the main clause header, keeping nested subclauses and list items together."
     )
@@ -87,15 +85,13 @@ class ClausePointerList(BaseModel):
 
 
 class ClauseList(BaseModel):
-    """List of clauses extracted from source documents."""
-
     clause_list: list[Clause] = Field(
         default_factory=list, description="Complete clauses extracted from the text."
     )
 
 
 def has_current_references(rows: list[dict]) -> bool:
-    """Require current reference metadata before reusing canonical extraction caches."""
+    """True only when every row carries clause references in the current Hashline format, so caches in older formats are re-extracted."""
     try:
         for row in rows:
             refs = row["metadata"]["clause"]

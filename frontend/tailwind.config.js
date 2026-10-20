@@ -1,7 +1,7 @@
 /** Maps the master-ui-aligned semantic tokens defined in styles.css onto Tailwind utilities, with dark values following the system preference. */
-/** @type {import('tailwindcss').Config} */
 const token = (name) => `hsl(var(--${name}) / <alpha-value>)`;
 
+/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   darkMode: "media",

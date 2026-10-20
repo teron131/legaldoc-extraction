@@ -13,17 +13,18 @@ import re
 RESET = "\033[0m"
 BOLD = "\033[1m"
 CONSOLE_LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
+# The UI activity log parses this layout (parseLog in RunPipelineTab.tsx).
 FILE_LOG_FORMAT = (
     "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
 )
 LOG_FILE_NAME = "legaldoc_extraction.log"
 
 COLORS = {
-    # Section tags (message prefixes like "[MAIN] ...")
+    # Keyed by a message's leading tag, such as "[MAIN] ...", or by level name.
     "MAIN": "\033[35m",
     "LOADER": "\033[36m",
     "EXTRACTOR": "\033[33m",
-    "FIXER": "\033[34m",  # Blue for fixer logs
+    "FIXER": "\033[34m",
     "DOCUMENT": "\033[36m",
     "FILES": "\033[34m",
     "INFO": "\033[32m",
@@ -37,7 +38,7 @@ TAG_RE = re.compile(r"\[[^\]]+\]")
 
 
 def _colorize_tag_prefix(message: str) -> str:
-    """Colorize a log tag prefix."""
+    """Color the run of leading tags in the first tag's color, so `[MAIN] [LOADER] Failed` colors both tags magenta; messages whose first tag is unknown pass through."""
     first_tag_match = FIRST_TAG_RE.match(message)
     if not first_tag_match:
         return message
@@ -58,8 +59,6 @@ def _colorize_tag_prefix(message: str) -> str:
 
 
 class ColoredFormatter(logging.Formatter):
-    """Colored console formatter."""
-
     def format(self, record: logging.LogRecord) -> str:
         """Colorize a record copy so concurrent handlers retain the original message and exception details."""
         record = copy(record)
@@ -75,7 +74,6 @@ class ColoredFormatter(logging.Formatter):
 
 def setup_logging(logs_dir: Path, level: int = logging.INFO) -> logging.Logger:
     """Replace root handlers with console and file handlers, truncating the log file for the new run."""
-    # Configure root logger to ensure all child loggers (like legaldoc_extraction.fixer.*) work
     root_logger = logging.getLogger()
     root_logger.setLevel(level)
     for handler in root_logger.handlers[:]:

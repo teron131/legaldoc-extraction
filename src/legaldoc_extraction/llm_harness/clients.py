@@ -29,12 +29,10 @@ class ResolvedProvider:
 
     @property
     def api_model(self) -> str:
-        """Return the provider-specific model name."""
         return _normalize_model(self.model, self.platform)
 
 
 def _normalize_platform(platform: str) -> Platform:
-    """Match a supported platform name case-insensitively or raise ValueError."""
     mapping: dict[str, Platform] = {
         "vercel ai gateway": "Vercel AI Gateway",
         "gemini": "Gemini",
@@ -47,12 +45,11 @@ def _normalize_platform(platform: str) -> Platform:
 
 
 def _is_provider_scoped_model(model: str) -> bool:
-    """Return whether the model uses provider/model naming."""
     return "/" in model and model.count("/") == 1
 
 
 def resolve_chat_provider(model: str, platform: str) -> ResolvedProvider:
-    """Resolve validated credentials and model identity for either chat or agent SDK clients."""
+    """Raises ValueError for an unknown platform, missing credentials, or a model the platform cannot route: Gemini needs a `gemini*` name and Vercel AI Gateway needs `provider/model`."""
     provider = _resolve_provider(model, platform)
     if provider.platform == "Gemini" and not provider.model.lower().startswith(
         "gemini"
@@ -66,14 +63,13 @@ def resolve_chat_provider(model: str, platform: str) -> ResolvedProvider:
 
 
 def _normalize_model(model: str, platform: Platform) -> str:
-    """Normalize the model name for the selected platform."""
+    """On Gemini, drop a routing prefix: `google/gemini-3.8-flash` → `gemini-3.8-flash`; other platforms keep the name."""
     if platform == "Gemini" and "/" in model:
         return model.split("/", 1)[1]
     return model
 
 
 def _get_provider_config(platform: Platform) -> tuple[SecretStr, str]:
-    """Resolve the provider endpoint and required credentials, rejecting missing configuration."""
     if platform == "Vercel AI Gateway":
         return SecretStr(settings.ai_gateway_key), AI_GATEWAY_BASE_URL
     if platform == "Gemini":
@@ -85,7 +81,6 @@ def _get_provider_config(platform: Platform) -> tuple[SecretStr, str]:
 
 
 def _resolve_provider(model: str, platform: str) -> ResolvedProvider:
-    """Normalize provider and model names and resolve credentials before client-specific validation."""
     normalized_platform = _normalize_platform(platform)
     normalized_model = _normalize_model(model, normalized_platform)
     if normalized_platform == "Custom" and not normalized_model.strip():
@@ -101,7 +96,6 @@ def _resolve_provider(model: str, platform: str) -> ResolvedProvider:
 
 
 def _validate_embedding_provider(provider: ResolvedProvider) -> ResolvedProvider:
-    """Require provider/model routing for Vercel AI Gateway embeddings."""
     if provider.platform == "Vercel AI Gateway" and not _is_provider_scoped_model(
         provider.model
     ):
@@ -117,12 +111,7 @@ def ChatDynamic(
     reasoning_effort: Literal["minimal", "low", "medium", "high"] | None = None,
     **kwargs,
 ) -> BaseChatModel:
-    """Unified OpenAI-compatible chat model constructor.
-
-    - Vercel AI Gateway: provider/model routing format supported.
-    - Gemini: `ChatOpenAI` against Gemini's OpenAI-compatible base_url.
-    - Custom: Chat Completions against LLM_BASE_URL with model identifiers preserved.
-    """
+    """Custom endpoints use Chat Completions rather than the Responses API, which generic OpenAI-compatible servers often lack; raises the same ValueErrors as resolve_chat_provider."""
     provider = resolve_chat_provider(model, platform)
     if provider.platform == "Custom":
         kwargs["use_responses_api"] = False
@@ -181,12 +170,12 @@ def DynamicEmbeddings(
     platform: str,
     **kwargs,
 ) -> Embeddings:
-    """Create an OpenAI-compatible embedding client using the selected provider and credentials."""
     provider = _validate_embedding_provider(_resolve_provider(model, platform))
     return OpenAIEmbeddings(
         model=provider.api_model,
         api_key=provider.api_key,
         base_url=provider.base_url,
+        # The length check tokenizes with tiktoken and sends token ids, which non-OpenAI models reject.
         check_embedding_ctx_length=False,
         **kwargs,
     )

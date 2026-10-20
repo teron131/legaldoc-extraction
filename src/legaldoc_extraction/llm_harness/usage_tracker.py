@@ -8,14 +8,11 @@ from typing import Any
 
 @dataclass(slots=True)
 class UsageMetadata:
-    """Token usage and cost metadata."""
-
     total_input_tokens: int = 0
     total_output_tokens: int = 0
     total_cost: float = 0.0
 
     def __add__(self, other: UsageMetadata) -> UsageMetadata:
-        """Return combined totals without mutating either operand."""
         return UsageMetadata(
             total_input_tokens=self.total_input_tokens + other.total_input_tokens,
             total_output_tokens=self.total_output_tokens + other.total_output_tokens,
@@ -29,7 +26,6 @@ class UsageMetadata:
         output_tokens: int = 0,
         cost: float = 0.0,
     ) -> UsageMetadata:
-        """Return a copy with additional usage totals."""
         return self + UsageMetadata(
             total_input_tokens=int(input_tokens or 0),
             total_output_tokens=int(output_tokens or 0),
@@ -37,7 +33,6 @@ class UsageMetadata:
         )
 
     def to_dict(self) -> dict[str, int | float]:
-        """Return the values as a dictionary."""
         return {
             "total_input_tokens": self.total_input_tokens,
             "total_output_tokens": self.total_output_tokens,
@@ -46,7 +41,7 @@ class UsageMetadata:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> UsageMetadata:
-        """Convert serialized usage fields to numeric totals, defaulting missing fields to zero."""
+        """Missing fields count as zero."""
         return cls(
             total_input_tokens=int(data.get("total_input_tokens", 0)),
             total_output_tokens=int(data.get("total_output_tokens", 0)),
@@ -65,7 +60,10 @@ class UsageMetadata:
         )
 
     def format(self) -> str:
-        """Return a formatted summary string."""
+        """`Input: 1,234, Output: 56, Cost: $0.0123`, omitting cost when it is zero.
+
+        The UI reads token totals back out of the `[MAIN] Total - …` log line, so keep this wording.
+        """
         summary = (
             f"Input: {self.total_input_tokens:,}, Output: {self.total_output_tokens:,}"
         )
@@ -85,7 +83,7 @@ def build_usage_update(
     output_tokens: int = 0,
     cost: float = 0.0,
 ) -> UsageTotals:
-    """Build updated workflow usage fields by adding a delta to existing state."""
+    """Return the state's running totals plus this delta; graph state has no reducer for these fields, so nodes must return totals, not deltas."""
     return (
         UsageMetadata.from_state(state)
         .with_added(

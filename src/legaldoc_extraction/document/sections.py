@@ -109,7 +109,6 @@ def _fingerprint(text: str) -> str:
 
 
 def _first_match_line(pattern: re.Pattern[str], lines: list[str]) -> int | None:
-    """Return the first line number matching the given regex pattern."""
     for line_number, line in enumerate(lines, start=1):
         if pattern.search(line):
             return line_number
@@ -117,7 +116,6 @@ def _first_match_line(pattern: re.Pattern[str], lines: list[str]) -> int | None:
 
 
 def _anchor_lines(lines: list[str]) -> dict[str, int | None]:
-    """Collect loose structural anchor line numbers from markdown lines."""
     clause = _first_match_line(SECTION_2_CLAUSE_RE, lines)
     subsection = None
     if clause is not None:
@@ -143,7 +141,6 @@ def _anchor_lines(lines: list[str]) -> dict[str, int | None]:
 def _anchor_sanity_check(
     sections: DocumentSections, anchors: dict[str, int | None]
 ) -> None:
-    """Reject section boundaries that contradict detected document anchors."""
     overview_start = anchors["overview_start"]
     sec2_clause = anchors["section_2_clause"]
     sec3_mitigation = anchors["section_3_mitigation"]

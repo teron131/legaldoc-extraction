@@ -39,7 +39,7 @@ export interface paths {
     put?: never;
     /**
      * Upload
-     * @description Upload PDF files.
+     * @description Store uploaded PDFs in the input directory, replacing same-named files and skipping non-PDF names; responds 409 while a run is active and 413 for a file over 50 MB, keeping files saved earlier in the request.
      */
     post: operations["upload_upload_post"];
     delete?: never;
@@ -59,7 +59,7 @@ export interface paths {
     put?: never;
     /**
      * Run
-     * @description Start a pipeline run.
+     * @description Start a background run over every uploaded PDF without current results, using saved settings plus this request's unpersisted overrides; responds 409 `busy` while a run is active.
      */
     post: operations["run_run_post"];
     delete?: never;
@@ -79,7 +79,7 @@ export interface paths {
     put?: never;
     /**
      * Stop
-     * @description Request cancellation of this generation while its workers finish exiting.
+     * @description Request cancellation of this generation while its workers finish exiting; responds 409 when `run_id` is no longer current.
      */
     post: operations["stop_run__run_id__stop_post"];
     delete?: never;
@@ -97,7 +97,7 @@ export interface paths {
     };
     /**
      * Logs
-     * @description Get recent log lines and running status.
+     * @description Return recent log lines and the current run; pass `cursor` as `after` to /logs/stream to continue without gaps or repeats.
      */
     get: operations["logs_logs_get"];
     put?: never;
@@ -117,7 +117,7 @@ export interface paths {
     };
     /**
      * Logs Stream
-     * @description Resume after the last acknowledged SSE record, falling back to the initial snapshot cursor.
+     * @description Stream log records as SSE from byte offset `after` (the /logs cursor), resuming from `Last-Event-ID` on reconnect; emits `reset` when `run_id` is no longer current and `done` with the final run state.
      */
     get: operations["logs_stream_logs_stream_get"];
     put?: never;
@@ -137,13 +137,13 @@ export interface paths {
     };
     /**
      * Get Env
-     * @description Get current environment configuration.
+     * @description Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset values are omitted.
      */
     get: operations["get_env_env_get"];
     put?: never;
     /**
      * Set Env
-     * @description Persist settings and write-only Custom credentials; an omitted or blank key preserves the saved credential.
+     * @description Persist settings and write-only Custom credentials for the next run; an omitted or blank key preserves the saved credential.
      */
     post: operations["set_env_env_post"];
     delete?: never;
@@ -161,7 +161,7 @@ export interface paths {
     };
     /**
      * Get Platforms
-     * @description Get platform configurations for UI.
+     * @description Return each platform's default chat and embedding model.
      */
     get: operations["get_platforms_platforms_get"];
     put?: never;
@@ -188,7 +188,7 @@ export interface paths {
     post?: never;
     /**
      * Delete Output
-     * @description Delete a cached output.
+     * @description Delete one output's canonical result, rollback snapshot, and exports, keeping its source copy and Markdown; `id` comes from /outputs.
      */
     delete: operations["delete_output_outputs_delete"];
     options?: never;
@@ -207,7 +207,7 @@ export interface paths {
     put?: never;
     /**
      * Retry Output
-     * @description Retry a cached output.
+     * @description Delete one output's result and re-extract it in the background from the retained Markdown; responds 409 `busy` while a run is active.
      */
     post: operations["retry_output_outputs_retry_post"];
     delete?: never;
@@ -225,7 +225,7 @@ export interface paths {
     };
     /**
      * Search Output Rows
-     * @description Search cached output metadata and clause rows case-insensitively across all documents.
+     * @description Search cached output metadata and clause rows case-insensitively across all documents, returning one match per occurrence.
      */
     get: operations["search_output_rows_outputs_search_get"];
     put?: never;
@@ -245,7 +245,7 @@ export interface paths {
     };
     /**
      * Preview Output
-     * @description Preview a cached output.
+     * @description Return every canonical row of one output; `id` comes from /outputs.
      */
     get: operations["preview_output_outputs_preview_get"];
     put?: never;
@@ -265,7 +265,7 @@ export interface paths {
     };
     /**
      * Download Output
-     * @description Download a cached output.
+     * @description Download one output in `format`, or a ZIP when several `id`s are given; CSV and XLSX are rendered on request from the canonical JSON.
      */
     get: operations["download_output_outputs_download_get"];
     put?: never;
@@ -282,7 +282,7 @@ export interface components {
   schemas: {
     /**
      * BatchResult
-     * @description Report document outcomes without treating handled per-file failures as a successful batch.
+     * @description Document counts for one run: `failed` includes failures handled and logged per document, and `skipped` counts documents that already had results.
      */
     BatchResult: {
       /**
@@ -332,7 +332,7 @@ export interface components {
     };
     /**
      * EnvUpdateRequest
-     * @description Request payload for updating persisted UI environment values.
+     * @description Settings to persist; omitted fields keep their saved values.
      */
     EnvUpdateRequest: {
       /**
@@ -533,7 +533,7 @@ export interface components {
     };
     /**
      * UploadResponse
-     * @description Upload result summary.
+     * @description Number of PDFs stored; files without a .pdf name are skipped.
      */
     UploadResponse: {
       /** Saved */

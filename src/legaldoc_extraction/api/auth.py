@@ -14,15 +14,13 @@ from ..config import normalize_env_value
 
 @dataclass(frozen=True, slots=True)
 class AuthConfig:
-    """Runtime authentication configuration."""
-
     client_id: str
     issuer: str
     jwks_uri: str
 
 
 def is_auth_enabled() -> bool:
-    """Return whether authentication is enabled."""
+    """Enabled unless AUTH_ENABLED is 0, false, no, or off; unset means enabled."""
     value = normalize_env_value(os.getenv("AUTH_ENABLED"))
     if value is None:
         return True
@@ -30,7 +28,6 @@ def is_auth_enabled() -> bool:
 
 
 def _normalize_base_url(value: str | None) -> str | None:
-    """Remove trailing slashes from a base URL."""
     normalized_value = normalize_env_value(value)
     if normalized_value is None:
         return None
@@ -39,7 +36,7 @@ def _normalize_base_url(value: str | None) -> str | None:
 
 @lru_cache(maxsize=1)
 def get_auth_config() -> AuthConfig:
-    """Build auth configuration from environment variables."""
+    """Raises HTTPException(500) when the Keycloak variables are unset."""
     base_url = _normalize_base_url(os.getenv("KEYCLOAK_BASE_URL"))
     realm = normalize_env_value(os.getenv("KEYCLOAK_REALM"))
     client_id = normalize_env_value(os.getenv("KEYCLOAK_CLIENT_ID"))
@@ -59,12 +56,10 @@ def get_auth_config() -> AuthConfig:
 
 @lru_cache(maxsize=1)
 def get_jwks_client() -> PyJWKClient:
-    """Return a cached JWKS client."""
     return PyJWKClient(get_auth_config().jwks_uri)
 
 
 def _has_expected_audience(payload: dict[str, Any], client_id: str) -> bool:
-    """Check whether the token is intended for the configured client."""
     if payload.get("azp") == client_id:
         return True
 
@@ -77,7 +72,7 @@ def _has_expected_audience(payload: dict[str, Any], client_id: str) -> bool:
 
 
 def extract_request_token(request: Request) -> str:
-    """Extract a bearer token from the request."""
+    """Falls back to the access_token query parameter because EventSource cannot send headers; raises HTTP 401 when neither is present."""
     authorization_header = request.headers.get("Authorization")
     if authorization_header:
         scheme, _, token = authorization_header.partition(" ")
@@ -109,6 +104,7 @@ def authenticate_request(request: Request) -> None:
             signing_key.key,
             algorithms=["RS256"],
             issuer=config.issuer,
+            # Keycloak access tokens often name the client in azp rather than aud, so the audience is checked below.
             options={"verify_aud": False},
         )
     except InvalidTokenError as exc:

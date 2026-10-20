@@ -43,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 def segment_node(state: ExtractorState) -> dict[str, object]:
-    """Use the map bound to the current Markdown, never proceeding with rejected segmentation."""
+    """Reuse the section map bound to the current Markdown; otherwise prepare the document, which rewrites the Markdown file with the agent's corrections and saves a new map."""
     path = state.artifacts.markdown_path
     text = path.read_text(encoding="utf-8")
     sections = load_sections(path, text)
@@ -79,7 +79,6 @@ def segment_node(state: ExtractorState) -> dict[str, object]:
 
 
 def extract_overview_node(state: ExtractorState) -> dict[str, Any]:
-    """Extract overview data from the segmented overview content."""
     if not state.overview_input:
         raise ValueError("No overview content to extract")
 
@@ -93,7 +92,6 @@ def extract_overview_node(state: ExtractorState) -> dict[str, Any]:
 
 
 def extract_mitigation_node(state: ExtractorState) -> dict[str, Any]:
-    """Extract mitigation data from the segmented mitigation content."""
     if not state.overview_output:
         raise ValueError("No overview available")
     if not state.mitigation_input:
@@ -109,7 +107,7 @@ def extract_mitigation_node(state: ExtractorState) -> dict[str, Any]:
 
 
 def extract_clause_node(state: ExtractorState) -> dict[str, Any]:
-    """Extract clause data from the segmented clause content."""
+    """The model returns Hashline pointers rather than text, so clause content is copied verbatim from the source."""
     if not state.overview_output:
         raise ValueError("No overview available")
     if not state.mitigation_output:
@@ -147,7 +145,6 @@ def _extract_section[Output: BaseModel](
     prompt: str,
     content: str,
 ) -> tuple[Output, dict[str, int | float]]:
-    """Validate one structured extraction response and carry its provider-reported usage into graph state."""
     check_stop()
     llm = ChatDynamic(
         model=state.model,
@@ -170,7 +167,7 @@ def _extract_section[Output: BaseModel](
 def resolve_clauses(
     pointer_result: ClausePointerList, source_content: str
 ) -> ClauseList:
-    """Hydrate pointer-based clause output back into clause text."""
+    """Pointers whose references fail validation or cover only blank lines are logged and dropped rather than raised."""
     extracted_clauses: list[Clause] = []
     for pointer in pointer_result.pointers:
         try:
@@ -206,7 +203,7 @@ def resolve_clauses(
 
 
 def parse_table_node(state: ExtractorState) -> dict[str, Any]:
-    """Consolidate extracted outputs and write canonical JSON."""
+    """Pair each clause with its matched mitigation and write the canonical JSON; unmatched clauses get an empty mitigation."""
     if (
         not state.overview_output
         or not state.mitigation_output
@@ -246,7 +243,6 @@ def parse_table_node(state: ExtractorState) -> dict[str, Any]:
 
 
 def fix_output_node(state: ExtractorState) -> dict[str, Any]:
-    """Run the shared fixer on finalized canonical JSON output."""
     target = state.artifacts.json_path
     if not target.exists():
         raise FileNotFoundError(f"Canonical output file not found: {target}")
@@ -280,14 +276,12 @@ def fix_output_node(state: ExtractorState) -> dict[str, Any]:
 
 @functools.lru_cache(maxsize=1)
 def create_extractor_graph() -> CompiledStateGraph:
-    """Create extractor workflow graph."""
     graph = StateGraph(
         ExtractorState,
         input_schema=ExtractorInput,
         output_schema=ExtractorOutput,
     )
 
-    # Add nodes
     graph.add_node("segment", segment_node)
     graph.add_node("extract_overview", extract_overview_node)
     graph.add_node("extract_mitigation", extract_mitigation_node)
@@ -295,7 +289,6 @@ def create_extractor_graph() -> CompiledStateGraph:
     graph.add_node("parse_table", parse_table_node)
     graph.add_node("fix_output", fix_output_node)
 
-    # Add edges
     graph.add_edge(START, "segment")
     graph.add_edge("segment", "extract_overview")
     graph.add_edge("extract_overview", "extract_mitigation")

@@ -10,18 +10,19 @@ class RunStopped(Exception):
     """End a cancelled workflow without treating cancellation as a failed document."""
 
 
+# Worker threads see the signal only when submitted under copy_context().
 stop_signal: ContextVar[Event | None] = ContextVar("stop_signal", default=None)
 
 
 def check_stop() -> None:
-    """Prevent queued documents and subsequent stages from starting after cancellation."""
+    """Raise RunStopped once this run's stop signal is set, so queued documents and later stages never start."""
     signal = stop_signal.get()
     if signal is not None and signal.is_set():
         raise RunStopped()
 
 
 async def until_stopped[T](operation: Awaitable[T]) -> T:
-    """Cancel an active agent loop and await its cleanup before its worker exits."""
+    """Await the operation while polling the stop signal; on stop, cancel it and wait for its cleanup before raising RunStopped."""
     task = asyncio.ensure_future(operation)
     try:
         while not task.done():

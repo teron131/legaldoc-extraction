@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "LegalDoc Extraction",
-    "version": "0.19.0"
+    "version": "0.19.1"
   },
   "paths": {
     "/": {
@@ -42,7 +42,7 @@
       },
       "post": {
         "summary": "Upload",
-        "description": "Upload PDF files.",
+        "description": "Store uploaded PDFs in the input directory, replacing same-named files and skipping non-PDF names; responds 409 while a run is active and 413 for a file over 50 MB, keeping files saved earlier in the request.",
         "operationId": "upload_upload_post",
         "requestBody": {
           "content": {
@@ -81,7 +81,7 @@
     "/run": {
       "post": {
         "summary": "Run",
-        "description": "Start a pipeline run.",
+        "description": "Start a background run over every uploaded PDF without current results, using saved settings plus this request's unpersisted overrides; responds 409 `busy` while a run is active.",
         "operationId": "run_run_post",
         "requestBody": {
           "content": {
@@ -130,7 +130,7 @@
     "/run/{run_id}/stop": {
       "post": {
         "summary": "Stop",
-        "description": "Request cancellation of this generation while its workers finish exiting.",
+        "description": "Request cancellation of this generation while its workers finish exiting; responds 409 when `run_id` is no longer current.",
         "operationId": "stop_run__run_id__stop_post",
         "parameters": [
           {
@@ -170,7 +170,7 @@
     "/logs": {
       "get": {
         "summary": "Logs",
-        "description": "Get recent log lines and running status.",
+        "description": "Return recent log lines and the current run; pass `cursor` as `after` to /logs/stream to continue without gaps or repeats.",
         "operationId": "logs_logs_get",
         "responses": {
           "200": {
@@ -189,7 +189,7 @@
     "/logs/stream": {
       "get": {
         "summary": "Logs Stream",
-        "description": "Resume after the last acknowledged SSE record, falling back to the initial snapshot cursor.",
+        "description": "Stream log records as SSE from byte offset `after` (the /logs cursor), resuming from `Last-Event-ID` on reconnect; emits `reset` when `run_id` is no longer current and `done` with the final run state.",
         "operationId": "logs_stream_logs_stream_get",
         "parameters": [
           {
@@ -261,7 +261,7 @@
     "/env": {
       "get": {
         "summary": "Get Env",
-        "description": "Get current environment configuration.",
+        "description": "Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset values are omitted.",
         "operationId": "get_env_env_get",
         "responses": {
           "200": {
@@ -278,7 +278,7 @@
       },
       "post": {
         "summary": "Set Env",
-        "description": "Persist settings and write-only Custom credentials; an omitted or blank key preserves the saved credential.",
+        "description": "Persist settings and write-only Custom credentials for the next run; an omitted or blank key preserves the saved credential.",
         "operationId": "set_env_env_post",
         "requestBody": {
           "content": {
@@ -317,7 +317,7 @@
     "/platforms": {
       "get": {
         "summary": "Get Platforms",
-        "description": "Get platform configurations for UI.",
+        "description": "Return each platform's default chat and embedding model.",
         "operationId": "get_platforms_platforms_get",
         "responses": {
           "200": {
@@ -353,7 +353,7 @@
       },
       "delete": {
         "summary": "Delete Output",
-        "description": "Delete a cached output.",
+        "description": "Delete one output's canonical result, rollback snapshot, and exports, keeping its source copy and Markdown; `id` comes from /outputs.",
         "operationId": "delete_output_outputs_delete",
         "parameters": [
           {
@@ -394,7 +394,7 @@
     "/outputs/retry": {
       "post": {
         "summary": "Retry Output",
-        "description": "Retry a cached output.",
+        "description": "Delete one output's result and re-extract it in the background from the retained Markdown; responds 409 `busy` while a run is active.",
         "operationId": "retry_output_outputs_retry_post",
         "parameters": [
           {
@@ -445,7 +445,7 @@
     "/outputs/search": {
       "get": {
         "summary": "Search Output Rows",
-        "description": "Search cached output metadata and clause rows case-insensitively across all documents.",
+        "description": "Search cached output metadata and clause rows case-insensitively across all documents, returning one match per occurrence.",
         "operationId": "search_output_rows_outputs_search_get",
         "parameters": [
           {
@@ -486,7 +486,7 @@
     "/outputs/preview": {
       "get": {
         "summary": "Preview Output",
-        "description": "Preview a cached output.",
+        "description": "Return every canonical row of one output; `id` comes from /outputs.",
         "operationId": "preview_output_outputs_preview_get",
         "parameters": [
           {
@@ -527,7 +527,7 @@
     "/outputs/download": {
       "get": {
         "summary": "Download Output",
-        "description": "Download a cached output.",
+        "description": "Download one output in `format`, or a ZIP when several `id`s are given; CSV and XLSX are rendered on request from the canonical JSON.",
         "operationId": "download_output_outputs_download_get",
         "parameters": [
           {
@@ -600,7 +600,7 @@
         },
         "type": "object",
         "title": "BatchResult",
-        "description": "Report document outcomes without treating handled per-file failures as a successful batch."
+        "description": "Document counts for one run: `failed` includes failures handled and logged per document, and `skipped` counts documents that already had results."
       },
       "Body_upload_upload_post": {
         "properties": {
@@ -686,7 +686,7 @@
         "additionalProperties": false,
         "type": "object",
         "title": "EnvUpdateRequest",
-        "description": "Request payload for updating persisted UI environment values."
+        "description": "Settings to persist; omitted fields keep their saved values."
       },
       "HTTPValidationError": {
         "properties": {
@@ -1042,7 +1042,7 @@
         "type": "object",
         "required": ["saved"],
         "title": "UploadResponse",
-        "description": "Upload result summary."
+        "description": "Number of PDFs stored; files without a .pdf name are skipped."
       },
       "UploadedFileInfo": {
         "properties": {

@@ -21,7 +21,7 @@ PROTECTED_API_PREFIXES = ("/env", "/logs", "/outputs", "/platforms", "/run", "/u
 
 
 def _allowed_cors_origins() -> list[str]:
-    """Return allowed CORS origins for local frontend development."""
+    """Only the Vite dev server is cross-origin; the built frontend is served by this app."""
     frontend_host = os.getenv("FRONTEND_HOST", "localhost")
     frontend_port = os.getenv("FRONTEND_PORT", "5173")
     configured_origin = f"http://{frontend_host}:{frontend_port}"
@@ -41,7 +41,6 @@ def _startup_banner(
     frontend_host: str | None,
     frontend_port: str | None,
 ) -> str:
-    """Build the startup banner."""
     width = STARTUP_BANNER_WIDTH
     lines = [
         "#" * width,
@@ -64,7 +63,6 @@ def _startup_banner(
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    """Configure application logging and announce server startup."""
     setup_logging(LOGS_DIR)
     logger.info(
         _startup_banner(
@@ -86,7 +84,6 @@ app = FastAPI(
 
 @app.middleware("http")
 async def require_api_authentication(request: Request, call_next):
-    """Protect API routes with Keycloak JWT authentication."""
     if (
         is_auth_enabled()
         and request.method != "OPTIONS"
