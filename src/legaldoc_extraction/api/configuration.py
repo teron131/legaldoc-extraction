@@ -25,7 +25,7 @@ router = APIRouter()
 
 @router.get("/env", response_model_exclude_none=True)
 def get_env() -> EnvResponse:
-    """Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset values are omitted."""
+    """Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset or invalid values are omitted."""
     env_values = get_ui_config_env_values()
     return EnvResponse(
         platform=_coerce_literal_value(
@@ -76,4 +76,8 @@ def _coerce_optional_int(value: str | None) -> int | None:
     normalized_value = normalize_env_value(value)
     if normalized_value is None:
         return None
-    return int(normalized_value)
+    try:
+        return int(normalized_value)
+    except ValueError:
+        # Like an unknown platform, an invalid number is omitted so the form still loads and saving replaces it.
+        return None

@@ -1344,7 +1344,8 @@ export function OutputFilesTab({
                                 </p>
                                 {confirmMode === "retry" && (
                                   <p className="mt-1 text-xs text-muted-foreground">
-                                    Removes this result and runs the PDF again.
+                                    Re-extracts from the saved Markdown without rerunning OCR, and
+                                    keeps this result if that fails.
                                   </p>
                                 )}
                                 <div className="mt-3 flex justify-end gap-2">

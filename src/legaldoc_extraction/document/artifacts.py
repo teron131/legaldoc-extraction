@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 import hashlib
 from pathlib import Path
@@ -191,13 +193,39 @@ class DocumentArtifacts:
         ):
             path.mkdir(parents=True, exist_ok=True)
 
-    def delete_outputs(self) -> None:
-        """Remove the canonical result, rollback snapshot, and derived exports while retaining the source and prepared Markdown."""
-        for path in (
+    @property
+    def _output_paths(self) -> tuple[Path, ...]:
+        return (
             self.json_path,
             self.json_snapshot_path,
             self.export_json_path,
             self.export_csv_path,
             self.export_xlsx_path,
-        ):
+        )
+
+    def delete_outputs(self) -> None:
+        """Remove the canonical result, rollback snapshot, and derived exports while retaining the source and prepared Markdown."""
+        for path in self._output_paths:
             path.unlink(missing_ok=True)
+
+    @contextmanager
+    def outputs_replaced(self) -> Iterator[None]:
+        """Moves the outputs aside so the block regenerates them, and puts them back if the block raises, so a failed or stopped rerun keeps the previous result."""
+        backups = {
+            path: path.with_name(f"{path.name}.rerun-backup")
+            for path in self._output_paths
+            if path.exists()
+        }
+        for path, backup in backups.items():
+            path.replace(backup)
+        try:
+            yield
+        except BaseException:
+            for path in self._output_paths:
+                if path in backups:
+                    backups[path].replace(path)
+                else:
+                    path.unlink(missing_ok=True)
+            raise
+        for backup in backups.values():
+            backup.unlink()

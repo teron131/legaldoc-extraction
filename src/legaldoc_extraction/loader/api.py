@@ -28,7 +28,7 @@ def load_pdf(
 
     Markdown already at the output path is reused with zero usage, and a non-PDF file yields `(None, zero usage)`.
     Without output_dir, Markdown and its section map are written beside each PDF.
-    A single PDF path returns one tuple and a list returns a list; omitted options fall back to `settings`.
+    A single PDF path returns one tuple, and a list or directory returns a list; omitted options fall back to `settings`.
 
     Args:
         pages_per_chunk: Pages per OCR request; a chunk whose output is truncated is retried one page smaller.

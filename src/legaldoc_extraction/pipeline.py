@@ -64,7 +64,8 @@ def _resolve_input_files(config: Settings) -> list[Path] | None:
     if config.target_pdf:
         target_path = DATA_INPUT_DIR / config.target_pdf
         if not target_path.exists():
-            return []
+            logger.warning("[MAIN] Target PDF not found: %s", target_path.name)
+            return None
         if target_path.suffix.lower() != ".pdf":
             logger.warning(
                 "[MAIN] Unsupported file type (PDF only): %s", target_path.name

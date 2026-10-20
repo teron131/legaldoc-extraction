@@ -67,7 +67,7 @@ def delete_output(id: str = Query(..., min_length=1)) -> StatusResponse:
     responses={409: {"model": StatusResponse}},
 )
 def retry_output(id: str = Query(..., min_length=1)) -> StatusResponse | JSONResponse:
-    """Delete one output's result and re-extract it in the background from the retained Markdown; responds 409 `busy` while a run is active."""
+    """Re-extract one output in the background from the retained Markdown, keeping the previous result if the re-extraction fails or is stopped; responds 409 `busy` while a run is active."""
     if not runner.start(_retry_output_result, id):
         return JSONResponse(StatusResponse(status="busy").model_dump(), status_code=409)
     return StatusResponse(status="started")
@@ -337,10 +337,12 @@ def _retry_output_result(output_id: str) -> BatchResult:
     settings.apply_runtime_overrides(target_pdf=previous_target_pdf, k=previous_k)
     if not artifacts.markdown_path.is_file():
         raise FileNotFoundError(f"Retained Markdown missing: {artifacts.markdown_path}")
-    artifacts.delete_outputs()
-    result = extract_clauses(artifacts)
-    if not artifacts.json_path.is_file():
-        raise FileNotFoundError(f"Canonical JSON output missing: {artifacts.json_path}")
+    with artifacts.outputs_replaced():
+        result = extract_clauses(artifacts)
+        if not artifacts.json_path.is_file():
+            raise FileNotFoundError(
+                f"Canonical JSON output missing: {artifacts.json_path}"
+            )
     logger.info("[MAIN] Total - %s", UsageMetadata.from_state(result).format())
     return BatchResult(succeeded=1)
 

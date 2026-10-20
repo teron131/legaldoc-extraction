@@ -20,7 +20,7 @@ class ResolvedSources:
     output_dir: Path | None
 
     def collapse(self, results: list[T]) -> T | list[T]:
-        """Unwrap a single result only for scalar input; explicit input lists retain list results."""
+        """Unwrap the result only for a single file path; a directory or list input always returns a list, even with one or no matches."""
         return results[0] if self.is_single else results
 
     def output_paths(self, ext: str) -> list[Path]:
@@ -80,7 +80,8 @@ def resolve_pipeline_sources(
         resolved_output_dir.mkdir(parents=True, exist_ok=True)
     return ResolvedSources(
         files=files,
-        is_single=len(files) == 1 and not isinstance(source_path, list),
+        is_single=not isinstance(source_path, list)
+        and resolve_path(source_path).is_file(),
         output_dir=resolved_output_dir,
     )
 

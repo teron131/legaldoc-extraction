@@ -137,7 +137,7 @@ export interface paths {
     };
     /**
      * Get Env
-     * @description Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset values are omitted.
+     * @description Return saved settings for the configuration form; credentials are reported only as `llm_api_key_configured`, and unset or invalid values are omitted.
      */
     get: operations["get_env_env_get"];
     put?: never;
@@ -207,7 +207,7 @@ export interface paths {
     put?: never;
     /**
      * Retry Output
-     * @description Delete one output's result and re-extract it in the background from the retained Markdown; responds 409 `busy` while a run is active.
+     * @description Re-extract one output in the background from the retained Markdown, keeping the previous result if the re-extraction fails or is stopped; responds 409 `busy` while a run is active.
      */
     post: operations["retry_output_outputs_retry_post"];
     delete?: never;
